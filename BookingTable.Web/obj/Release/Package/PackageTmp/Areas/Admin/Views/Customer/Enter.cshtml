@@ -1,0 +1,329 @@
+﻿@using BookingTable.Business
+@using BookingTable.Entities
+@using BookingTable.Entities.Entities
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Models.UserModel
+@{
+    ViewBag.Title = Resources.Content_Customer;
+}
+<link rel="stylesheet" href="~/Content/css/datepicker3.css" />
+<div class="row">
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            @if (Model.Id > 0)
+            {
+                <h3 class="box-title">@Resources.Content_Update</h3>
+            }
+            else
+            {
+                Model.DateOfBirth = DateTime.Today;
+
+                <h3 class="box-title">@Resources.Content_Add</h3>
+            }
+
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form id="formCustomer">
+            <input type="hidden" name="Id" id="Id" value="@Model.Id" />
+            <div class="box-body">
+                <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label for="FullName">@Resources.Content_Fullname</label>
+                        @Html.TextBoxFor(x => x.FullName, new { @class = "form-control", placeholder = Resources.Content_Fullname })
+                    </div>
+                    <div class="form-group">
+                        <label for="DateOfBirth">@Resources.Content_Birthday</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="DateOfBirth" name="DateOfBirth" placeholder="Birthday" value="@Model.DateOfBirth.ToString("yyyy MMMM dd")">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Address">@Resources.Content_Address</label>
+                        @Html.TextBoxFor(x => x.Address, new { @class = "form-control", placeholder = Resources.Content_Address })
+                    </div>
+                    <div class="form-group">
+                        <label for="Phone">@Resources.Content_Phone</label>
+                        @Html.TextBoxFor(x => x.Phone, new { @class = "form-control", placeholder = Resources.Content_Phone })
+                    </div>
+                    <div class="form-group">
+                        <label for="Email">@Resources.Content_Email</label>
+                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = Resources.Content_Email })
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label for="Username">@Resources.Content_Username</label>
+                        @Html.TextBoxFor(x => x.Username, new { @class = "form-control", placeholder = Resources.Content_Username })
+                    </div>
+                    <div class="form-group">
+                        <label for="Password">@Resources.Content_Password</label>
+                        @Html.PasswordFor(x => x.Password, new { @class = "form-control", placeholder = Resources.Content_Password })
+                    </div>
+                    <div class="form-group ">
+                        <label for="PasswordConfirm">@Resources.Content_PasswordConfirm</label>
+                        @Html.PasswordFor(x => x.PasswordConfirm, new { @class = "form-control", placeholder = Resources.Content_PasswordConfirm })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Active">@Resources.Content_Status</label>
+                        @Html.DropDownListFor(x => x.Active, new List<SelectListItem> { new SelectListItem() { Value = "true", Text = Resources.Content_Active }, new SelectListItem() { Value = "false", Text = Resources.Content_Inactive } }, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <button id="btnSave" type="button" class="btn btn-primary pull-right">@Resources.Content_Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="~/Scripts/jquery-2.2.3.min.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js"></script>
+<script>
+    //Date picker
+    $('#DateOfBirth')
+        .datepicker({
+            autoclose: true
+        });
+    $(document)
+        .ready(function () {
+            jQuery.validator.addMethod("noSpaceOnly", function (value, element) {
+                return value.trim(' ') !== "";
+            }, '@Resources.Validate_Required');
+
+            jQuery.validator.addMethod("PasswordConfirm", function (value, element) {
+                return $('#Password').val() === $('#PasswordConfirm').val();
+            }, '@Resources.Validate_PasswordConfirm');
+
+            $.validator.addMethod("maxDate", function (value, element) {
+                var curDate = new Date();
+                var inputDate = new Date(value);
+                return inputDate < curDate;
+            }, "@Resources.Validate_MaxDate");
+            @if (Model.Id > 0)
+            {
+                <text>
+                $('#formCustomer')
+                    .validate({
+                        rules:
+                        {
+                            FullName:
+                            {
+                                required: true,
+                                maxlength: 64,
+                                noSpaceOnly: true
+                            },
+                            Username:
+                            {
+                                required: true,
+                                maxlength: 32,
+                                noSpaceOnly: true
+                            },
+                            Password:
+                            {
+                                maxlength: 32,
+                                PasswordConfirm: true
+                            },
+                            Address:
+                            {
+                                required: true,
+                                maxlength: 128,
+                                noSpaceOnly: true
+                            },
+                            PasswordConfirm:
+                            {
+                                maxlength: 32,
+                                PasswordConfirm: true
+                            },
+                            Phone:
+                            {
+                                required: true,
+                                maxlength: 16,
+                                noSpaceOnly: true
+                            },
+                            Email:
+                            {
+                                required: true,
+                                maxlength: 128,
+                                noSpaceOnly: true,
+                                email: true
+                            },
+                            Birthday:
+                            {
+                                required: true
+                            }
+                        },
+                        messages:
+                        {
+                            FullName:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax, 64)'
+                            },
+                            Username:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax, 32)'
+                            },
+                            Password:
+                            {
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax, 32)'
+                            },
+                            Address:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax, 128)'
+                            },
+                            PasswordConfirm:
+                            {
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax,32)'
+                            },
+                            Phone:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax,16)'
+                            },
+                            Email:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax,128)',
+                                email: '@Resources.Validate_Email'
+                            },
+                            Birthday:
+                            {
+                                required: '@Resources.Validate_Required'
+                            }
+                        }
+                    });
+            </text>
+            }
+            else
+            {
+                <text>
+                    $('#formCustomer')
+                    .validate({
+                        rules:
+                        {
+                            FullName:
+                            {
+                                required: true,
+                                maxlength: 64,
+                                noSpaceOnly: true
+                            },
+                            Username:
+                            {
+                                required: true,
+                                maxlength: 32,
+                                noSpaceOnly: true
+                            },
+                            Password:
+                            {
+                                required: true,
+                                maxlength: 32,
+                                noSpaceOnly: true,
+                                PasswordConfirm: true
+                            },
+                            Address:
+                            {
+                                required: true,
+                                maxlength: 128,
+                                noSpaceOnly: true
+                            },
+                            PasswordConfirm:
+                            {
+                                required: true,
+                                maxlength: 32,
+                                noSpaceOnly: true,
+                                PasswordConfirm: true
+                            },
+                            Phone:
+                            {
+                                required: true,
+                                maxlength: 16,
+                                noSpaceOnly: true
+                            },
+                            Email:
+                            {
+                                required: true,
+                                maxlength: 128,
+                                noSpaceOnly: true,
+                                email: true
+                            },
+                            Birthday:
+                            {
+                                required: true
+                            }
+                        },
+                        messages:
+                        {
+                            FullName:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax, 64)'
+                            },
+                            Username:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax, 32)'
+                            },
+                            Password:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax, 32)'
+                            },
+                            Address:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax, 128)'
+                            },
+                            PasswordConfirm:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax,32)'
+                            }, Phone:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax,16)'
+                            }, Email:
+                            {
+                                required: '@Resources.Validate_Required',
+                                maxlength: '@string.Format(Resources.Validate_LenghtMax,128)',
+                                email: '@Resources.Validate_Email'
+                            }, Birthday:
+                            {
+                                required: '@Resources.Validate_Required'
+                            }
+                        }
+                    });
+
+            </text>
+            }
+            $('#btnSave')
+                .click(function () {
+                    if ($('#formCustomer').valid()) {
+                        $.ajax({
+                            url: '@Url.Action("Enter", "Customer")',
+                            type: 'POST',
+                            data: $('#formCustomer').serialize(),
+                            success: function (data) {
+                                ShowNotification(data);
+                                if (data.RedirectToUrl !== null) {
+                                    setTimeout(function() {
+                                            location.href = data.RedirectToUrl;
+                                        },
+                                        700);
+                                }
+                            },
+                            error: function (data) {
+                                ShowNotification(data);
+                            }
+                        });
+                    }
+                });
+        });
+</script>
