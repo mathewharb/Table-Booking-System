@@ -1,0 +1,78 @@
+﻿@using BookingTable.Entities.Enum
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Models.WebContentSettingModel
+@{
+    ViewBag.Title = Resources.Content_WebContent;
+}
+<form id="formSetting">
+    <div class="box-body">
+        <div class="form-group col-md-6 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="WebLongName">@Resources.Content_WebLongName</label>
+                @Html.TextBoxFor(x => x.WebLongName, new { @class = "form-control", placeholder = Resources.Content_Fullname })
+            </div>
+            <div class="form-group">
+                <label for="WebShortName">@Resources.Content_WebShortName</label>
+                @Html.TextBoxFor(x => x.WebShortName, new { @class = "form-control", placeholder = Resources.Content_Fullname })
+            </div>
+            <div class="form-group">
+                <label for="Address">@Resources.Content_Address</label>
+                @Html.TextBoxFor(x => x.Address, new { @class = "form-control", placeholder = Resources.Content_Address })
+            </div>
+            <div class="box-footer">
+                <button id="btnSave" type="button" class="btn btn-primary pull-right">@Resources.Content_Save</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function()
+    {
+        jQuery.validator.addMethod("noSpaceOnly", function (value, element) {
+            return value.trim(' ') !== "";
+        }, '@Resources.Validate_Required');
+
+        $("#formSetting")
+            .validate({
+                rules: {
+                    WebLongName:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 64
+                    },
+                    WebShortName:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 64
+                    }
+            },
+            messages: {
+                WebLongName:
+                {
+                    maxlength: '@string.Format(Resources.Validate_Required,64)'
+                },
+                WebShortName:
+                {
+                    maxlength: '@string.Format(Resources.Validate_Required,64)'
+                }
+            }
+        });
+        $("#btnSave")
+            .click(function() {
+                if ($("#formSetting").valid()) {
+                    $.ajax({
+                        url: '@Url.Action("SaveWebContentSetting", "Setting")',
+                        type: 'POST',
+                        data: $("#formSetting").serialize(),
+                        success: function (data) {
+                            ShowNotification(data);
+                        },
+                        error: function (data) {
+                            ShowNotification(data);
+                        }
+                });
+                }
+            });
+    });
+
+</script>

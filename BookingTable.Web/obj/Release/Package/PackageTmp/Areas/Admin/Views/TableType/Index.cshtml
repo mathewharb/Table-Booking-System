@@ -1,0 +1,89 @@
+﻿@using System.Globalization
+@using BookingTable.Web.Resources
+@model IEnumerable<BookingTable.Entities.Entities.TableType>
+@{
+    ViewBag.Title = Resources.Content_TableType;
+
+    var locale = new CultureInfo("en-US");
+}
+<div class="box box-primary">
+    <div class="box-header">
+        <div class="form-group">
+            <button id="btnAddTableType" type="button" class="btn btn-default btn-flat pull-right">@Resources.Content_New</button>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+        <table class="table table-hover" id="tableTableType">
+            <thead>
+                <tr>
+                    <th style="width:100px">
+                        <a><i class="fa fa-cogs"></i></a>
+                    </th>
+                    <th>@Resources.Content_Name</th>
+                    <th>@Resources.Content_Deposit</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var type in Model)
+                {
+                    <tr id="@type.Id">
+                        <td>
+                            <a href="#" class="editTableType"><i class="fa fa-edit"></i></a>
+                            <label style="width: 20px"></label>
+                            <a href="#" class="deleteTableType"><i class="fa fa-remove"></i></a>
+                        </td>
+                        <td>@type.Name</td>
+                        <td>@type.DepositPrice.ToString("c",locale)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document)
+        .ready(function () {
+
+            $('#tableTableType').DataTable();
+        });
+
+    $('#btnAddTableType')
+               .click(function () {
+                   EnterTableType(0);
+               });
+    $('.editTableType')
+        .click(function () {
+            EnterTableType($(this).parents().parents().attr('id'));
+        });
+    $('.deleteTableType')
+        .click(function () {
+            DeleteTableType($(this).parents().parents().attr('id'));
+        });
+
+    function EnterTableType(id) {
+        $.ajax({
+            url: '@Url.Action("Enter", "TableType")/?id=' + id,
+            type: 'GET',
+            success: function (data) {
+                ShowPopup(data);
+            },
+            error: function () {
+                ShowNotification({ 'Title': "Error", 'Content': "Try to reconnect the internet" });
+            }
+        });
+    }
+
+    function DeleteTableType(id) {
+        $.ajax({
+            url: '@Url.Action("Delete", "TableType")/?id=' + id,
+            type: 'GET',
+            success: function (data) {
+                ShowPopup(data);
+            },
+            error: function () {
+                ShowNotification({ 'Title': "Error", 'Content': "Try to reconnect the internet" });
+            }
+        });
+    }
+</script>

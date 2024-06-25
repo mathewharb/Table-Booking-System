@@ -1,0 +1,46 @@
+﻿@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Table
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_Delete</h4>
+</div>
+<div class="modal-body">
+    <form id="formTable">
+        <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div><a href="#">@Resources.Content_Name <span class="pull-right">@Model.Name</span></a></div>
+            </li>
+            <li class="list-group-item">
+                <div><a href="#">@Resources.Content_Seats <span class="pull-right">@Model.Seats</span></a></div>
+            </li>
+            <li class="list-group-item">
+                <div><a href="#">@Resources.Content_Type <span class="pull-right">@Model.TableType.Name</span></a></div>
+            </li>
+        </ul>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button id="btnDelete" type="button" class="btn btn-primary bg-blue">@Resources.Content_Delete</button>
+</div>
+<script>
+    $('#btnDelete')
+                .click(function () {
+                        if (window.FormData !== undefined) {
+                            $.ajax({
+                                url: '@Url.Action("Delete", "Table")',
+                                type: 'POST',
+                                data: $('#formTable').serialize(),
+                                success: function (data) {
+                                    ShowNotification(data);
+                                },
+                                error: function (data) {
+                                    ShowNotification(data);
+                                }
+                            });
+                        }
+                });
+</script>

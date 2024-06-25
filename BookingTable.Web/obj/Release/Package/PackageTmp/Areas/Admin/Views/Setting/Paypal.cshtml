@@ -1,0 +1,23 @@
+﻿@using BookingTable.Entities.Enum
+@using BookingTable.Web.Resources
+@model IEnumerable<BookingTable.Entities.Entities.Setting>
+@{
+    ViewBag.Title = Resources.Content_Paypal;
+}
+<form id="formSetting">
+    <div class="box-body">
+        <div class="form-group col-md-6 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="Value">@Resources.Content_Username</label>
+                @Html.TextBoxFor(x => x.SingleOrDefault(y => y.Key == PaypalSettingEnum.Username.ToString()).Value, new { @class = "form-control", placeholder = Resources.Content_Fullname })
+            </div>
+            <div class="form-group">
+                <label for="Value">@Resources.Content_AccountNumber</label>
+                @Html.TextBoxFor(x => x.SingleOrDefault(y => y.Key == PaypalSettingEnum.AccountNumber.ToString()).Value, new { @class = "form-control", placeholder = Resources.Content_Fullname })
+            </div>
+            <div class="box-footer">
+                <button id="btnSave" type="button" class="btn btn-primary pull-right">@Resources.Content_Save</button>
+            </div>
+        </div>
+    </div>
+</form>
