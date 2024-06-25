@@ -1,0 +1,94 @@
+﻿@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Table
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_New - @Model.Floor.Name</h4>
+</div>
+<div class="modal-body">
+    <form id="formTable">
+        <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+        <input type="hidden" id="FloorId" name="FloorId" value="@Model.Floor.Id" />
+        <div class="form-group">
+            <label for="Name">@Resources.Content_Name</label>
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = Resources.Content_Name })
+        </div>
+        <div class="form-group">
+            <label for="Seats">@Resources.Content_Seats</label>
+            @Html.TextBoxFor(x => x.Seats, new { @class = "form-control", placeholder = Resources.Content_Seats })
+        </div>
+        <div class="form-group">
+            <label for="TypeId">@Resources.Content_Type</label>
+            @Html.DropDownListFor(x => x.TypeId, GetSelectList.GetTableTypeSelectList(), new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            <label for="Active">@Resources.Content_Status</label>
+            @Html.DropDownListFor(x => x.Active, new List<SelectListItem> {new SelectListItem() {Value = "true", Text = Resources.Content_Active}, new SelectListItem() { Value = "false", Text = Resources.Content_Inactive } }, new { @class = "form-control" })
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button id="btnSave" type="button" class="btn btn-primary bg-blue">@Resources.Content_Save</button>
+</div>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script>
+    $(document)
+        .ready(function () {
+            jQuery.validator.addMethod("noSpaceOnly", function (value, element) {
+                return value.trim(' ') !== "";
+            }, '@Resources.Validate_Required');
+            $('#formTable')
+                .validate({
+                    rules: {
+                        Name: {
+                            required: true,
+                            maxlength: 32,
+                            noSpaceOnly: true
+                        },
+                        Seats: {
+                            required: true,
+                            maxlength: 3,
+                            number: true,
+                            min: 1
+                        }
+                    },
+                    messages: {
+                        Name: {
+                            required: '@Resources.Validate_Required',
+                            maxlength: '@String.Format(Resources.Validate_LenghtMax,32)'
+                        },
+                        Seats: {
+                            required: '@Resources.Validate_Required',
+                            maxlength: '@String.Format(Resources.Validate_LenghtMax, 3)',
+                            number: '@Resources.Validate_Number',
+                            min: '@String.Format(Resources.Validate_Min,1)'
+                        }
+                    }
+
+                });
+            $('#btnSave')
+                .click(function () {
+                    if ($('#formTable').valid()) {
+                        if (window.FormData !== undefined) {
+                            $.ajax({
+                                url: '@Url.Action("Enter", "Table")',
+                                type: 'POST',
+                                data: $('#formTable').serialize(),
+                                success: function (data) {
+                                    ShowNotification(data);
+                                },
+                                error: function (data) {
+                                    ShowNotification(data);
+                                }
+                            });
+                        }
+                    }
+                });
+        });
+
+</script>
+
