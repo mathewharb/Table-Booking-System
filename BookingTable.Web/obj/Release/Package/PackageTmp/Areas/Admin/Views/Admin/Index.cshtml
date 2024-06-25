@@ -1,0 +1,99 @@
+﻿@using BookingTable.Web.Resources
+@model IEnumerable<BookingTable.Entities.Entities.Admin>
+@{
+    ViewBag.Title = Resources.Content_Staff;
+}
+
+<div class="box box-primary">
+    <div class="box-header">
+        <div class="form-group">
+            <button type="button" class="btn btn-default btn-flat pull-right" onclick="location.href='@Url.Action("Enter","Admin")'">@Resources.Content_New</button>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+        <table id="tableAdmin" class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 100px">
+                        <a><i class="fa fa-cogs"></i></a>
+                    </th>
+                    <th>@Resources.Content_Username</th>
+                    <th>@Resources.Content_Fullname</th>
+                    <th>@Resources.Content_Birthday</th>
+                    <th>@Resources.Content_Phone</th>
+                    <th>@Resources.Content_Address</th>
+                    <th>@Resources.Content_Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var t in Model)
+            {
+                <tr id="@t.Id">
+                    <td>
+                        <a href="#" class="detailsAdmin"><i class="fa fa-file" ></i></a>
+                        <label style="width: 20px"></label>
+                        <a href="@Url.Action("Enter","Admin",new {id = t.Id})"><i class="fa fa-edit"></i></a>
+                        <label style="width: 20px"></label>
+                        <a href="#" class="deleteAdmin"><i class="fa fa-remove"></i></a>
+                    </td>
+                    <td>@t.Username</td>
+                    <td>@t.FullName</td>
+                    <td>@t.DateOfBirth.ToString("yyyy MMMM dd")</td>
+                    <td>@t.Phone</td>
+                    <td>@t.Address</td>
+                    @if (t.Active != false)
+                    {
+                        <td><span class="badge bg-green">@Resources.Content_Active</span></td>
+                    }
+                    else
+                    {
+                        <td><span class="badge bg-green">@Resources.Content_Inactive</span></td>
+                    }
+
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document)
+      .ready(function () {
+          $('#tableAdmin').DataTable();
+      });
+    $('.detailsAdmin')
+        .click(function () {
+            DetailsAdmin($(this).parents().parents().attr('id'));
+        });
+    $('.deleteAdmin')
+        .click(function () {
+            DeleteAdmin($(this).parents().parents().attr('id'));
+        });
+
+    function DetailsAdmin(id) {
+        $.ajax({
+            url: '@Url.Action("Details","Admin")/?id=' + id,
+            type: 'GET',
+            success: function (data) {
+                ShowPopup(data);
+            },
+            error: function () {
+                ShowNotification({ 'Title': "Error", 'Content': "Try to reconnect the internet" });
+            }
+        });
+    }
+    function DeleteAdmin(id) {
+        $.ajax({
+            url: '@Url.Action("Delete","Admin")/?id=' + id,
+            type: 'GET',
+            success: function (data) {
+                ShowPopup(data);
+            },
+            error: function () {
+                ShowNotification({ 'Title': "Error", 'Content': "Try to reconnect the internet" });
+            }
+        });
+    }
+</script>
