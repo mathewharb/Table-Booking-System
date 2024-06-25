@@ -1,0 +1,59 @@
+﻿@using System.Globalization
+@using BookingTable.Entities.Entities
+@using BookingTable.Entities.Paypal
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@{
+    var web = WebSetting.GetWebContent();
+    ViewBag.Title = Resources.Content_Views;
+    var culture = new CultureInfo("en-US");
+    var payment = ViewBag.Payment as PDTHolder;
+}
+@if (payment != null)
+{
+    <div class="pad margin no-print">
+        <div class="callout callout-info" style="margin-bottom: 0 !important;">
+            <h4><i class="fa fa-info"></i> @Resources.Content_Hi @(((Customer)Session["User"]).FullName)</h4>
+            @Resources.Content_Thanks
+        </div>
+    </div>
+    <section class="invoice">
+        <!-- title row -->
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="page-header">
+                    <i class="fa fa-globe"></i> @web.WebLongName
+                    <small class="pull-right">@Resources.Content_Date: @DateTime.Now.ToString("d")</small>
+                </h2>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- info row -->
+        <div class="row invoice-info">
+            <div class="col-sm-4 invoice-col">
+                @Resources.Content_From
+                <address>
+                    <strong>@payment.PayerFirstName @payment.PayerLastName</strong><br>
+                    @Resources.Content_Email: @payment.PayerEmail
+                </address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-4 invoice-col">
+                @Resources.Content_To
+                <address>
+                    <strong>@web.WebLongName</strong><br>
+                    @Resources.Content_Email: @payment.BusinessEmail
+                </address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-4 invoice-col">
+                <b>@Resources.Content_Invoice</b><br>
+                <b>@Resources.Content_AmountDue: </b>@DateTime.Now.ToString("d")
+                <br>
+                <b>@Resources.Content_Total: </b>@payment.GrossTotal.ToString("c", culture)<br>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+}

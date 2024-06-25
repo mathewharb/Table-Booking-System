@@ -1,0 +1,337 @@
+﻿@using System.Configuration
+@using System.Globalization
+@using BookingTable.Business.IRepository
+@using BookingTable.Business.Repository
+@using BookingTable.Entities.Entities
+@using BookingTable.Entities.Enum
+@using BookingTable.Entities.Paypal
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@{
+    var web = WebSetting.GetWebContent();
+    ViewBag.Title = Resources.Content_SubmitBooking;
+    var culture = new CultureInfo("en-US");
+    var order = (Order)Session["Booking"];
+    ISettingRepository settingRepository = new SettingRepository();
+    var mode = settingRepository.GetSettingByKey(PaypalSettingEnum.Mode.ToString());
+    var paypalUrl = settingRepository.GetSettingByKey(mode.Value);
+    var paypalEmail = settingRepository.GetSettingByKey(PaypalSettingEnum.PaypalEmail.ToString());
+    var user = (Customer)Session["User"];
+}
+@if (order != null)
+{
+    int i = 0;
+    var orderDetailsWithFood = order.OrderDetails.Where(x => x.FoodId != null).GroupBy(x => x.Food).ToList();
+    var orderDetailsNoFood = order.OrderDetails.Where(x => x.FoodId == null).ToList();
+
+    <section class="invoice">
+    <!-- title row -->
+    <div class="row">
+        <div class="col-xs-12">
+            <h2 class="page-header">
+                <i class="fa fa-globe"></i> @web.WebLongName
+                <small class="pull-right">@Resources.Content_Date: @DateTime.Now.ToString("d")</small>
+            </h2>
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- info row -->
+    <div class="row invoice-info">
+        <div class="col-md-10 table-responsive">
+            <table class="table table-striped">
+                <tbody>
+                @if (user != null)
+                {
+                    order.CreatorId = user.Id;
+                    order.CustomerId = user.Id;
+                    order.Customer = user;
+                    order.OrderDetails.ToList().ForEach(x => x.CreatorId = user.Id);
+
+                    <tr>
+                        <th>@Resources.Content_Fullname</th>
+                        <td>
+                            @order.Customer.FullName
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>@Resources.Content_Phone</th>
+                        <td>
+                            @order.Customer.Phone
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <h2 class="page-header"></h2>
+    <div class="row">
+        @if (order.OrderDetails.Any(x => x.Food != null))
+        {
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>@Resources.Content_Food</th>
+                        <th>@Resources.Content_Price</th>
+                        <th>@Resources.Content_Qty</th>
+                        <th>@Resources.Content_SubTotal</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @{
+                        int countFood = 0;
+                        decimal subtotal = 0;
+                    }
+                    @foreach (var item in orderDetailsWithFood)
+                    {
+                        int qty = order.OrderDetails.Where(x => x.FoodId == item.Key.Id).Select(x => x.Quantity).Sum().Value;
+                        countFood++;
+                        subtotal += qty*item.Key.Price;
+                        <tr>
+                            <td>@countFood</td>
+                            <td>@item.Key.Name</td>
+                            <td>@item.Key.Price.ToString("c", culture)</td>
+                            <td>@qty</td>
+                            <td>@((qty*item.Key.Price).ToString("c", culture))</td>
+                            <td><a class="pull-right deleteFood"  id="@item.Key.Id" href="javascript:void(0)">X</a></td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="4" class="text-left"><b>@Resources.Content_SubTotal</b></td>
+                        <td>@subtotal.ToString("c", culture)</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+        @if (order.OrderDetails.Any(x => x.Food == null))
+        {
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <th style="width: 10px">#</th>
+                        <th>@Resources.Content_Tables</th>
+                        <th>@Resources.Content_Time</th>
+                        <th>@Resources.Content_Deposit</th>
+                        <th></th>
+                    </tr>
+                    @{
+                        decimal totalTable = 0;
+                        int countTable = 0;
+                    }
+
+                    @foreach (var item in order.OrderDetails.Where(x => x.FoodId == null))
+                    {
+                        totalTable += item.Table.TableType.DepositPrice;
+                        countTable++;
+                        <tr>
+                            <td>@countTable</td>
+                            <td><span class="badge bg-blue tableId" style="margin-right: 10px;" data-id="@item.TableId" data-order-time="@item.OrderTime">@item.Table.Name</span></td>
+                            <td>@item.OrderTime.Value.ToString("hh:mm tt") &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @item.OrderTime.Value.ToString("MM/dd/yyyy ")</td>
+                            <td>@item.Table.TableType.DepositPrice.ToString("c", culture)</td>
+                            <td><a class="pull-right deleteTable" id="@item.TableId" href="javascript:void(0)">X</a></td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="3" class="text-left"><b>@Resources.Content_SubTotal</b></td>
+                        <td>@totalTable.ToString("c", culture)</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    <h2 class="page-header"></h2>
+    <div class="row">
+        <!-- /.col -->
+        <div class="col-md-6 col-xs-12">
+            <p class="lead">@Resources.Content_Note</p>
+            <div class="table-responsive">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                <textarea id="note" class="form-control" rows="5" disabled>@order.Note</textarea>
+                            </div>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-6 col-xs-12">
+            <p class="lead">@Resources.Content_AmountDue @DateTime.Now.ToString("d")</p>
+            <div class="table-responsive">
+                <table class="table">
+                    <tbody>
+                    @{
+                        var subTotal = order.DepositPrice.Value + order.SubTotal;
+                        var discount = order.Discount.Value/100*subTotal;
+                        var tax = order.Tax.Value/100*(subTotal - discount);
+                        var total = subTotal - discount + tax;
+                    }
+                    <tr>
+                        <th>@Resources.Content_SubTotal</th>
+                        <td>@subTotal.ToString("C", culture)</td>
+                    </tr>
+                    <tr>
+                        <th>@Resources.Content_Discount (@order.Discount%)</th>
+                        @if (order.Discount.HasValue)
+                        {
+                            <td>@discount.ToString("C", culture)</td>
+                        }
+                        else
+                        {
+                            <td>0</td>
+                        }
+                    </tr>
+                    <tr>
+                        <th>@Resources.Content_Tax (@order.Tax%)</th>
+                        @if (order.Tax.HasValue)
+                        {
+                            <td>@tax.ToString("C", culture)</td>
+                        }
+                        else
+                        {
+                            <td>0</td>
+                        }
+                    </tr>
+                    <tr>
+                        <th>@Resources.Content_Total</th>
+                        <td>@Math.Round(total).ToString("C", culture) (@total.ToString("C", culture))</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- /.col -->
+
+    @if (order.Id == 0)
+    {
+        if (user != null)
+        {
+            <div class="row">
+                <div class="col-md-10 pull-right">
+                    <form method="post" action="@paypalUrl.Value">
+                        <input type="hidden" name="upload" value="1"/>
+                        <input type="hidden" name="return" value="http://localhost:8717/Orders/SuccessPayment"/>
+                        <input type="hidden" name="cmd" value="_cart"/>
+                        <input type="hidden" name="business" value="@paypalEmail.Value"/>
+                        <input TYPE="hidden" name="charset" value="utf-8">
+                        <input type="hidden" name="currency_code" value="@Resources.Content_UnitContent">
+                        <input type="hidden" name="discount_rate_cart" value="@order.Discount">
+                        <input type="hidden" name="tax_cart" value="@Math.Round(tax)">
+                        @if (order.OrderDetails.Any(x => x.Food != null))
+                        {
+
+                            foreach (var item in orderDetailsWithFood)
+                            {
+                                i++;
+                                int qty = order.OrderDetails.Where(x => x.FoodId == item.Key.Id).Select(x => x.Quantity).Sum().Value;
+
+                                <input type="hidden" name="item_name_@i" value="@item.Key.Name"/>
+                                <input type="hidden" name="item_number_@i" value="@item.Key.Id"/>
+                                <input type="hidden" name="amount_@i" value="@item.Key.Price"/>
+                                <input type="hidden" name="quantity_@i" value="@qty"/>
+                            }
+                        }
+
+                        @foreach (var item in orderDetailsNoFood)
+                        {
+                            i++;
+                            <input type="hidden" name="item_name_@i" value="@Resources.Content_Table: @item.Table.Name"/>
+                            <input type="hidden" name="item_number_@i" value="@item.Id"/>
+                            <input type="hidden" name="amount_@i" value="@item.Table.TableType.DepositPrice"/>
+                            <input type="hidden" name="quantity_@i" value="1"/>
+                        }
+
+                        <input class="pull-right" type="image" name="submit" src="~/Content/images/paypal-checkout.png" alt="PayPal Checkout">
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-10 pull-right">
+                    <input class="pull-right" type="image" name="submit" data-toggle="modal" data-target="#loginModal" src="~/Content/images/paypal-checkout.png" alt="PayPal Checkout">
+                </div>
+            </div>
+
+        }
+        <div class="row">
+            <div class="col-md-10 pull-right">
+                <a class="pull-right clearBooking" href="javascript:void(0)">@Resources.Content_ClearAndRebook</a>
+            </div>
+        </div>
+    }
+    </section>
+    <script>
+        $(document).ready(function () {
+            $('.deleteFood')
+         .click(function () {
+             DeleteFood($(this).attr("id"));
+         });
+            $('.deleteTable')
+      .click(function () {
+          DeleteTable($(this).attr("id"));
+      });
+            $('.clearBooking')
+.click(function () {
+    ClearBooking();
+});
+            function DeleteTable(id) {
+                $.ajax({
+                    url: '@Url.Action("DeleteTable", "Orders")/?id=' + id,
+                    type: 'GET',
+                    success: function (data) {
+                        ShowPopup(data);
+                    },
+                    error: function () {
+                        ConnectionError();
+                    }
+                });
+            }
+            function DeleteFood(id) {
+                $.ajax({
+                    url: '@Url.Action("DeleteFood", "Orders")/?id=' + id,
+                    type: 'GET',
+                    success: function (data) {
+                        ShowPopup(data);
+                    },
+                    error: function () {
+                        ConnectionError();
+                    }
+                });
+            }
+            function ClearBooking() {
+                $.ajax({
+                    url: '@Url.Action("ClearBooking", "Orders")',
+                    type: 'GET',
+                    success: function (data) {
+                        ShowPopup(data);
+                    },
+                    error: function () {
+                        ConnectionError();
+                    }
+                });
+            }
+        })
+    </script>
+}
+else
+{
+    <a>@Resources.Content_SessionTimeout</a>
+}

@@ -1,0 +1,538 @@
+﻿@using System.Globalization
+@using BookingTable.Entities.Entities
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@{
+    var culture = new CultureInfo("en-us");
+    var order = Session["BookingEntry"] as Order;
+    order.OrderDetails = order.OrderDetails.OrderBy(x => x.OrderTime).ToList();
+}
+<!-- general form elements -->
+<div class="modal-header bg-blue">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_Booking</h4>
+</div>
+<div class="modal-content">
+    <!-- /.box-header -->
+    <!-- form start -->
+    <div class="box-content no-padding">
+        <div class="box box-solid"></div>
+        <div class="box box-solid">
+            <div class="box-header bg-blue">
+                <h4 class="box-title">@Resources.Content_Step 1. @Resources.Content_BookingTable</h4>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" style="color: white"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table table-responsive">
+                    <tbody>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>@Resources.Content_Tables</th>
+                            <th>@Resources.Content_Time</th>
+                            <th>@Resources.Content_Deposit</th>
+                        </tr>
+                        @{ decimal total = 0;
+                        int countTable = 0;
+                        }
+
+                        @foreach (var item in order.OrderDetails)
+                        {
+                        total += item.Table.TableType.DepositPrice;
+                        countTable++;
+                        <tr>
+                            <td>@countTable</td>
+                            <td><span class="badge bg-blue tableId" style="margin-right: 10px;" data-id="@item.TableId" data-order-time="@item.OrderTime.Value">@item.Table.Name</span></td>
+                            <td>@item.OrderTime.Value.ToString("hh:mm tt") &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @item.OrderTime.Value.ToString("MM/dd/yyyy ")</td>
+                            <td>@item.Table.TableType.DepositPrice.ToString("c", culture)</td>
+                        </tr>
+                        }
+                        <tr>
+                            <td colspan="3" class="text-left"><b>@Resources.Content_SubTotal</b></td>
+                            <td>@total.ToString("c", culture)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="box box-solid">
+            <div class="box-header with-border bg-blue">
+                <h4 class="box-title">@Resources.Content_Step 2. @Resources.Content_OrderFood - @Resources.Content_NoRequired</h4>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" style="color: white"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="text-center">
+                    <p class="text-red">@Resources.Content_OrderLater</p>
+                </div>
+                <div class="pre-scrollable">
+                    <div class="row" style="padding: 10px; margin:10px;">
+                        @{
+                    var foods = GetSelectList.GetFoodSelectList();
+                    var count = foods.Count;
+                    var link = Support.GetPathPhotoFolder();
+                        }
+                        @if (count % 2 == 0)
+                    {
+                    for (int i = 0; i < count; i += 2)
+                    {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="#" onclick="ShowChoosen(this)">
+                                <div class="info-box food">
+                                    <img class="img-thumbnail img-responsive" src="@link/@foods[i].Image" style="width: 90px; height: 90px; float: left">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">@foods[i].Name</span>
+                                        <span class="info-box-number">@foods[i].Price.ToString("c", culture)</span>
+                                    </div>
+
+                                    <!-- /.info-box-content -->
+                                </div>
+                            </a>
+                            <div class="box box-primary box-solid OrderFood hidden">
+                                <div class="box-body">
+                                    <table class="table table-condensed">
+                                        <tbody data-max="@foods[i].Quantity" data-price="@foods[i].Price">
+                                            <tr>
+                                                <td><span class="badge bg-blue-active">@Resources.Content_All</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right">
+                                                        <li><a href="#" class="subAll">«</a></li>
+                                                        <li><a href="#" class="numerAll">0</a></li>
+                                                        <li><a href="#" class="addAll">»</a></li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            @{countTable = 0;}
+                                            @foreach (var item in order.OrderDetails)
+                                            {
+                                            countTable++;
+                                            <tr>
+                                                <td>@countTable &nbsp;<span class="badge bg-blue">@item.Table.Name</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right numerFood">
+                                                        <li><a href="#" class="sub">«</a></li>
+                                                        <li><a href="#" class="number" data-food-id="@foods[i].Id" data-table-id="@item.TableId" data-order-time="@item.OrderTime">0</a></li>
+                                                        <li><a href="#" class="add">»</a></li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" onclick="ShowChoosen(this)">
+                                <div class="info-box food">
+                                    <img class="img-thumbnail img-responsive" src="@link/@foods[i + 1].Image" style="width: 90px; height: 90px; float: left">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">@foods[i + 1].Name</span>
+                                        <span class="info-box-number">@foods[i + 1].Price.ToString("c", culture)</span>
+                                    </div>
+
+                                    <!-- /.info-box-content -->
+                                </div>
+                            </a>
+                            <div class="box box-primary box-solid OrderFood hidden">
+                                <div class="box-body">
+                                    <table class="table table-condensed">
+                                        <tbody data-max="@foods[i+1].Quantity" data-price="@foods[i+1].Price">
+                                            <tr>
+                                                <td><span class="badge bg-blue-active">@Resources.Content_All</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right">
+                                                        <li><a href="#" class="subAll">«</a></li>
+                                                        <li><a href="#" class="numerAll">0</a></li>
+                                                        <li><a href="#" class="addAll">»</a></li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            @{countTable = 0;}
+                                            @foreach (var item in order.OrderDetails)
+                                            {
+                                            countTable++;
+                                            <tr>
+                                                <td>@countTable &nbsp;<span class="badge bg-blue">@item.Table.Name</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right numerFood">
+                                                        <li><a href="#" class="sub">«</a></li>
+                                                        <li><a href="#" class="number" data-food-id="@foods[i + 1].Id" data-table-id="@item.TableId" data-order-time="@item.OrderTime">0</a></li>
+                                                        <li><a href="#" class="add">»</a></li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    }
+                    else
+                    {
+                    for (int i = 0; i < count - 1; i += 2)
+                    {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="#" onclick="ShowChoosen(this)">
+                                <div class="info-box food">
+                                    <img class="img-thumbnail img-responsive" src="@link/@foods[i].Image" style="width: 90px; height: 90px; float: left">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">@foods[i].Name</span>
+                                        <span class="info-box-number">@foods[i].Price.ToString("c", culture)</span>
+                                    </div>
+
+                                    <!-- /.info-box-content -->
+                                </div>
+                            </a>
+                            <div class="box box-primary box-solid OrderFood hidden">
+                                <div class="box-body">
+                                    <table class="table table-condensed">
+                                        <tbody data-max="@foods[i].Quantity" data-price="@foods[i].Price">
+                                            <tr>
+                                                <td><span class="badge bg-blue-active">@Resources.Content_All</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right">
+                                                        <li><a href="#" class="subAll">«</a></li>
+                                                        <li><a href="#" class="numerAll">0</a></li>
+                                                        <li><a href="#" class="addAll">»</a></li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            @{countTable = 0;}
+                                            @foreach (var item in order.OrderDetails)
+                                            {
+                                            countTable++;
+                                            <tr>
+                                                <td>@countTable &nbsp;<span class="badge bg-blue">@item.Table.Name</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right numerFood">
+                                                        <li><a href="#" class="sub">«</a></li>
+                                                        <li><a href="#" class="number" data-food-id="@foods[i].Id" data-table-id="@item.TableId" data-order-time="@item.OrderTime">0</a></li>
+                                                        <li><a href="#" class="add">»</a></li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" onclick="ShowChoosen(this)">
+                                <div class="info-box food">
+                                    <img class="img-thumbnail img-responsive" src="@link/@foods[i + 1].Image" style="width: 90px; height: 90px; float: left">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">@foods[i + 1].Name</span>
+                                        <span class="info-box-number">@foods[i + 1].Price.ToString("c", culture)</span>
+                                    </div>
+
+                                    <!-- /.info-box-content -->
+                                </div>
+                            </a>
+                            <div class="box box-primary box-solid OrderFood hidden">
+                                <div class="box-body">
+                                    <table class="table table-condensed">
+                                        <tbody data-max="@foods[i+1].Quantity" data-price="@foods[i+1].Price">
+                                            <tr>
+                                                <td><span class="badge bg-blue-active">@Resources.Content_All</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right">
+                                                        <li><a href="#" class="subAll">«</a></li>
+                                                        <li><a href="#" class="numerAll">0</a></li>
+                                                        <li><a href="#" class="addAll">»</a></li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            @{countTable = 0;}
+                                            @foreach (var item in order.OrderDetails)
+                                            {
+                                            countTable++;
+                                            <tr>
+                                                <td>@countTable &nbsp;<span class="badge bg-blue">@item.Table.Name</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right numerFood">
+                                                        <li><a href="#" class="sub">«</a></li>
+                                                        <li><a href="#" class="number" data-food-id="@foods[i + 1].Id" data-table-id="@item.TableId" data-order-time="@item.OrderTime">0</a></li>
+                                                        <li><a href="#" class="add">»</a></li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="#" onclick="ShowChoosen(this)">
+                                <div class="info-box food">
+                                    <img class="img-thumbnail img-responsive" src="@link/@foods[count - 1].Image" style="width: 90px; height: 90px; float: left">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">@foods[count - 1].Name</span>
+                                        <span class="info-box-number">@foods[count - 1].Price.ToString("c", culture)</span>
+                                    </div>
+
+                                    <!-- /.info-box-content -->
+                                </div>
+                            </a>
+                            <div class="box box-primary box-solid OrderFood hidden">
+                                <div class="box-body">
+                                    <table class="table table-condensed">
+                                        <tbody data-max="@foods[count - 1].Quantity" data-price="@foods[count - 1].Price">
+                                            <tr>
+                                                <td><span class="badge bg-blue-active">@Resources.Content_All</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right">
+                                                        <li><a href="#" class="subAll">«</a></li>
+                                                        <li><a href="#" class="numerAll">0</a></li>
+                                                        <li><a href="#" class="addAll">»</a></li>
+                                                    </ul>
+                                                </td>
+
+                                            </tr>
+                                            @{countTable = 0;}
+                                            @foreach (var item in order.OrderDetails)
+                                            {
+                                            countTable++;
+                                            <tr>
+                                                <td>@countTable &nbsp;<span class="badge bg-blue">@item.Table.Name</span></td>
+                                                <td>
+                                                    <ul class="pagination pagination-sm no-margin pull-right numerFood">
+                                                        <li><a href="#" class="sub">«</a></li>
+                                                        <li><a href="#" class="number" data-food-id="@foods[count - 1].Id" data-table-id="1">0</a></li>
+                                                        <li><a href="#" class="add">»</a></li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                    }
+
+                    </div>
+                </div>
+            </div> 
+        </div>
+        <div class="box box-solid">
+            <div class="box-header bg-blue">
+                <h4 class="box-title">@Resources.Content_Step 3. @Resources.Content_Review</h4>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" style="color: white"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table table-responsive">
+                    <tbody>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>@Resources.Content_Title</th>
+                            <th>@Resources.Content_Content</th>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td>@Resources.Content_Food</td>
+                            <td>
+                                <b id="foodPrice">0</b><a class="pull-right">@Resources.Content_UnitContent</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td>@Resources.Content_Table</td>
+                            <td>
+                                <b id="depositPrice" data-deposit="@order.DepositPrice">@order.DepositPrice.ToString()</b><a class="pull-right">@Resources.Content_UnitContent</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5.</td>
+                            <td>@Resources.Content_Total</td>
+                            <td><span class="badge bg-blue" id="total" style="width: 100px">@order.DepositPrice</span><a class="pull-right">@Resources.Content_UnitContent</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="box box-solid">
+            <div class="box-header bg-blue">
+                <h4 class="box-title">@Resources.Content_Note</h4>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" style="color: white"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="form-group">
+                    <textarea id="note" class="form-control" rows="3" placeholder="@Resources.Content_Note"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+        <button id="submitBooking" type="button" class="btn btn-primary pull-right">
+            @Resources.Content_SubmitBooking
+        </button>
+    </div>
+</div>
+<script>
+    $(document)
+        .ready(function () {
+            $('.sub')
+                .click(function () {
+                    var price = $($(this).parents('tbody')[0]).data("price");
+                    var subTotal = $("#foodPrice").text();
+                    var num = $($(this).parents()[0]).parents()[0].getElementsByTagName('li')[1].getElementsByTagName('a')[0];
+                    var numAll = $(this).parents('tbody')[0].getElementsByTagName('tr')[0].getElementsByTagName('td')[1].getElementsByTagName('ul')[0].getElementsByTagName('li')[1].getElementsByTagName("a")[0];
+                    if ($(num).text() > 0) {
+                        var value = $(num).text() - 1;
+                        $(num).text(value);
+                        $(numAll).text($(numAll).text() - 1);
+
+                        $("#foodPrice").text(subTotal - price);
+                        $("#total").text($("#foodPrice").text() - $("#discount").text() + @order.DepositPrice);
+                    }
+
+                });
+            $('.add')
+                .click(function () {
+                    var max = $($(this).parents('tbody')[0]).data("max");
+                    var price = $($(this).parents('tbody')[0]).data("price");
+                    var subTotal = $("#foodPrice").text();
+                    var num = $($(this).parents()[0]).parents()[0].getElementsByTagName('li')[1].getElementsByTagName('a')[0];
+                    var numAll = $(this).parents('tbody')[0].getElementsByTagName('tr')[0].getElementsByTagName('td')[1].getElementsByTagName('ul')[0].getElementsByTagName('li')[1].getElementsByTagName("a")[0];
+                    if ($(num).text() < max) {
+                        var value = $(num).text() - -1;
+
+                        $(num).text(value);
+                        $(numAll).text($(numAll).text() - -1);
+
+                        $("#foodPrice").text(subTotal - -price);
+                        $("#total").text($("#foodPrice").text() - $("#discount").text() + @order.DepositPrice);
+                    }
+                });
+            $('.subAll')
+               .click(function () {
+                   var price = $($(this).parents('tbody')[0]).data("price");
+                   var numAll = $(this).parents('tbody')[0].getElementsByTagName('tr')[0].getElementsByTagName('td')[1].getElementsByTagName('ul')[0].getElementsByTagName('li')[1].getElementsByTagName("a")[0];
+                   $($(this).parents('tbody')[0].getElementsByClassName('number'))
+                       .each(function () {
+                           var value = $(this).text();
+                           if (value > 0) {
+
+                               var subTotal = $("#foodPrice").text();
+                               value = $(this).text() - 1;
+
+                               $(this).text(value);
+                               $(numAll).text($(numAll).text() - 1);
+                               $("#foodPrice").text(subTotal - price);
+                               $("#total").text($("#foodPrice").text() - $("#discount").text() + @order.DepositPrice);
+                           }
+                       });
+               });
+            $('.addAll')
+                .click(function () {
+                    var max = $($(this).parents('tbody')[0]).data("max");
+                    var price = $($(this).parents('tbody')[0]).data("price");
+                    var numAll = $(this).parents('tbody')[0].getElementsByTagName('tr')[0].getElementsByTagName('td')[1].getElementsByTagName('ul')[0].getElementsByTagName('li')[1].getElementsByTagName("a")[0];
+                    $($(this).parents('tbody')[0].getElementsByClassName('number'))
+                         .each(function () {
+                             var value = $(this).text();
+                             if (value < max) {
+
+                                 var subTotal = $("#foodPrice").text();
+                                 value = value - -1;
+
+                                 $(this).text(value);
+                                 $(numAll).text($(numAll).text() - -1);
+
+                                 $("#foodPrice").text(subTotal - -price);
+                                 $("#total").text($("#foodPrice").text() - $("#discount").text() + @order.DepositPrice);
+                             }
+                         });
+                });
+
+            $('#submitBooking')
+                .click(function () {
+                    var orderDetails = [];
+                    $('.number')
+                        .each(function () {
+                            var number = $(this).text();
+                            if (number > 0) {
+                                orderDetails.push({
+                                    TableId: $(this).data("table-id"),
+                                    FoodId: $(this).data("food-id"),
+                                    OrderTime: $(this).data("order-time"),
+                                    Quantity: number
+                                });
+                            }
+                        });
+                    $('.tableId')
+                       .each(function () {
+                           orderDetails.push({
+                               TableId: $(this).data("id"),
+                               OrderTime: $(this).data("order-time")
+                           });
+                       });
+
+                    var order = {
+                        Note: $('#note').val(),
+                        OrderDetails: orderDetails
+                    };
+                    $.ajax({
+                        url: '@Url.Action("SubmitBooking","Orders")',
+                        type: 'POST',
+                        data: order,
+                        success: function () {
+                            location.href = '@Url.Action("ViewBooking","Orders")';
+                        },
+                        error: function () {
+                            ConnectionError();
+                        }
+                    });
+                });
+        });
+
+    function ShowChoosen(food) {
+        var numberFood = $(food).parent()[0].getElementsByClassName('OrderFood')[0];
+        if ($(numberFood).hasClass("hidden")) {
+            $(numberFood).hide();
+            $(numberFood).removeClass("hidden");
+            $(numberFood).show("slow");
+
+        } else {
+            $(numberFood).hide("slow", function () {
+                $(numberFood).addClass("hidden");
+            });
+        }
+    }
+</script>

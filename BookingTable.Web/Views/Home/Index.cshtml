@@ -1,0 +1,95 @@
+﻿@using BookingTable.Entities.Entities
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model IEnumerable<BookingTable.Entities.Models.TableModel>
+@{
+    ViewBag.Title = Resources.Content_Search;
+    var user = (Customer)Session["User"];
+    var order = Session["BookingEntry"] as Order;
+    var distanceTime = WebSetting.GetTimeDistanceSetting();
+}
+<div class="row">
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            if (item.Status == "Available")
+            {
+                <div class="col-lg-3 col-sm-6 col-xs-12" style="margin-top: 40px">
+                    <!-- small box -->
+                    <div class="small-box center-block" style="width: 250px; height: 250px">
+                        <div>
+                            <img src="~/Content/Uploads/Photos/table.png" alt="..." class="img-responsive img-thumbnail" style="width: 250px; height: 250px">
+                        </div>
+                        <div class="btn-group" style="width: 250px;">
+                            <button type="button" class="btn btn-primary" style="width: 150px">@item.Name (@item.Seats<small> @Resources.Content_Seats</small>)</button>
+                            @if (order != null && order.OrderDetails.Any(x => x.TableId == item.Id && x.OrderTime.Value.Date == item.Time.Date && x.OrderTime.Value.Hour == item.Time.Hour))
+                            {
+                                <button id="@item.Id" type="button" class="btn btn-primary btnBook" style="width: 100px">@Resources.Content_Book</button>
+                            }
+                            else
+                            {
+                                <button id="@item.Id" type="button" class="btn btn-success btnBook" style="width: 100px">@Resources.Content_Book</button>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+    <input type="hidden" id="tableString" />
+</div>
+<script>
+    $(document).ready(function () {
+        $(".btnBook")
+            .click(function () {
+                var btn = this;
+                var time = $("#Date").val() + " " + $("#Time").val();
+                $.ajax({
+                    url: '@Url.Action("BookingTable", "Orders")',
+                    type: 'POST',
+                    data: {
+                        "TableId": $(this).attr("id"),
+                        "Time": time
+                    },
+                    success: function (result) {
+                        $("#numberOfTables").html("@Resources.Content_Tables" + " [" + result + "]");
+                        if ($(btn).hasClass("btn-primary")) {
+                            //$(btn).html("@Resources.Content_Book");
+                            $(btn).addClass("btn-success");
+                            $(btn).removeClass("btn-primary");
+                        } else {
+                            //$(btn).html("@Resources.Content_Booked");
+                            $(btn).removeClass("btn-success");
+                            $(btn).addClass("btn-primary");
+                        }
+                    },
+                    error: function () {
+                        $('#popupModal').modal('hide');
+                        ConnectionError();
+                    }
+                });
+            });
+        $("#btnBooking")
+            .click(function () {
+                if ($("#numberOfTables").html() !== '@Resources.Content_Tables'+'[0]') {
+                    $('#popupContainer').append('<div class="box box-solid"><div class="overlay text-center"><i class="fa fa-refresh fa-spin" style="color:white"></i><br><b style="color:white">@Resources.Content_WaitingOnlyOne</b></div></div>');
+                    $('#popupModal').modal('show');
+                    $.ajax({
+                        url: '@Url.Action("Booking", "Orders")',
+                        type: 'GET',
+                        success: function (data) {
+                            ShowPopup(data);
+                        },
+                        error: function () {
+                            $('#popupModal').modal('hide');
+                            ConnectionError();
+                        }
+                    });
+                }
+            });
+    });
+</script>
+
+

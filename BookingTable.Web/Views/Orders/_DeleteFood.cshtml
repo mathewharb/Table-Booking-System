@@ -1,0 +1,38 @@
+﻿@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Food
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_Delete</h4>
+</div>
+<div class="modal-body">
+    <form id="formFood">
+        <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div><a href="javascript:void(0)">@Resources.Content_Food <span class="pull-right">@Model.Name</span></a></div>
+            </li>
+        </ul>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button id="btnDelete" type="button" class="btn btn-primary bg-blue">@Resources.Content_Delete</button>
+</div>
+<script>
+    $('#btnDelete')
+        .click(function () {
+            $.ajax({
+                url: '@Url.Action("DeleteFood", "Orders")',
+                type: 'POST',
+                data: $('#formFood').serialize(),
+                success: function (data) {
+                    ShowMessage(data);
+                },
+                error: function () {
+                    ConnectionError();
+                }
+            });
+        });
+</script>
