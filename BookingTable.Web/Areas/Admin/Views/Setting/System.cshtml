@@ -1,0 +1,114 @@
+﻿@using BookingTable.Entities.Enum
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Models.SystemSettingModel
+@{
+    ViewBag.Title = Resources.Content_Setting;
+}
+<form id="formSetting">
+    <div class="box-body">
+        <div class="form-group col-md-6 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="TimeDistance">@Resources.Content_TimeDistance</label>
+                @Html.TextBoxFor(x => x.TimeDistance, new { @class = "form-control", placeholder = Resources.Content_TimeDistance, type = "Number", min="1" })
+            </div>
+            <div class="form-group">
+                <label for="Discount">@Resources.Content_Discount (%)</label>
+                @Html.TextBoxFor(x => x.Discount, new { @class = "form-control", placeholder = Resources.Content_Discount, type = "Number", min = "0" })
+            </div>
+            <div class="form-group">
+                <label for="Tax">@Resources.Content_Tax (%)</label>
+                @Html.TextBoxFor(x => x.Tax, new { @class = "form-control", placeholder = Resources.Content_Tax, type = "Number", min = "0" })
+            </div>
+            <div class="form-group">
+                <label for="BookingLimit">@Resources.Content_BookingLimit</label>
+                @Html.TextBoxFor(x => x.BookingLimit, new { @class = "form-control", placeholder = Resources.Content_BookingLimit, type= "Number", min = "0" })
+            </div>
+            <div>
+                <button id="btnSave" type="button" class="btn btn-primary pull-left">@Resources.Content_Save</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        jQuery.validator.addMethod("noSpaceOnly", function (value, element) {
+            return value.trim(' ') !== "";
+        }, '@Resources.Validate_Required');
+
+        $("#formSetting")
+            .validate({
+                rules: {
+                    TimeDistance:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 3,
+                        number: true,
+                        min: 1
+                    },
+                    Discount:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 2,
+                        number: true,
+                        min: 0
+                    },
+                    Tax:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 2,
+                        number: true,
+                        min: 0
+                    },
+                    BookingLimit: {
+                        maxlength: 4,
+                        noSpaceOnly: true,
+                        number: true,
+                        min: 0
+                    }
+                },
+                messages: {
+                    TimeDistance:
+                    {
+                        maxlength: '@string.Format(Resources.Validate_Required,3)',
+                        number: '@Resources.Validate_Number',
+                        min: '@String.Format(Resources.Validate_Min,1)'
+                    },
+                    Discount:
+                    {
+                        maxlength: '@string.Format(Resources.Validate_Required,2)',
+                        number: '@Resources.Validate_Number',
+                        min: '@String.Format(Resources.Validate_Min,0)'
+                    },
+                    Tax:
+                    {
+                        maxlength: '@string.Format(Resources.Validate_Required,2)',
+                        number: '@Resources.Validate_Number',
+                        min: '@String.Format(Resources.Validate_Min,0)'
+                    },
+                    BookingLimit:
+                    {
+                        maxlength: '@string.Format(Resources.Validate_Required,4)',
+                        number: '@Resources.Validate_Number',
+                        min: '@String.Format(Resources.Validate_Min,0)'
+                    }
+                }
+            });
+        $("#btnSave")
+            .click(function () {
+                if ($("#formSetting").valid()) {
+                    $.ajax({
+                        url: '@Url.Action("SaveSystemSetting", "Setting")',
+                        type: 'POST',
+                        data: $('#formSetting').serialize(),
+                        success: function (data) {
+                            ShowMessage(data);
+                        },
+                        error: function () {
+                            ConnectionError();
+                        }
+                    });
+                }
+            });
+    });
+
+</script>

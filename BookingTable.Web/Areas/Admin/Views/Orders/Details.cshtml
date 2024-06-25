@@ -1,0 +1,391 @@
+﻿@using System.Globalization
+@using BookingTable.Business.IRepository
+@using BookingTable.Business.Repository
+@using BookingTable.Entities.Entities
+@using BookingTable.Entities.Enum
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Order
+@{
+    var web = WebSetting.GetWebContent();
+    ViewBag.Title = Resources.Content_Details;
+    var culture = new CultureInfo("en-US");
+
+    ISettingRepository settingRepository = new SettingRepository();
+    var tax = settingRepository.GetSettingByKey(SystemSettingEnum.Tax.ToString());
+    var discount = settingRepository.GetSettingByKey(SystemSettingEnum.Discount.ToString());
+}
+@if (Model.Completed != true)
+{
+    <section class="invoice">
+        <!-- title row -->
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="page-header">
+                    <i class="fa fa-globe"></i> @web.WebLongName
+                    <small class="pull-right">@Resources.Content_Date: @DateTime.Now.ToString("d")</small>
+                </h2>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- info row -->
+        <div class="row invoice-info">
+            @if (Model.Customer != null)
+            {
+                <div class="col-sm-4 invoice-col">
+                    @Resources.Content_RestaurantInfo
+                    <address>
+                        <strong>@web.WebLongName</strong><br>
+                        @web.Address<br>
+                        @Resources.Content_Phone: @web.Phone<br>
+                        @Resources.Content_Email: @web.Email
+                    </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                    @Resources.Content_CustomerInfo
+                    <address>
+                        <strong>@Model.Customer.FullName</strong><br>
+                        @Model.Customer.Address<br>
+                        @Resources.Content_Phone: @Model.Customer.Phone<br>
+                        @Resources.Content_Email: @Model.Customer.Email
+                    </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                    <b>@Resources.Content_InvoiceInfo</b><br>
+                    <br>
+                    <b>@Resources.Content_OrderID:</b> @Model.Id<br>
+                    <b>@Resources.Content_PaymentTime:</b> @DateTime.Now.ToString("f")<br>
+                    <b>@Resources.Content_PayeeId:</b> @Support.GetCurrentAdmin().Id
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-6 invoice-col">
+                    @Resources.Content_RestaurantInfo
+                    <address>
+                        <strong>@web.WebLongName</strong><br>
+                        @web.Address<br>
+                        @Resources.Content_Phone: @web.Phone<br>
+                        @Resources.Content_Email: @web.Email
+                    </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-6 invoice-col">
+                    <b>@Resources.Content_InvoiceInfo</b><br>
+                    <br>
+                    <b>@Resources.Content_OrderID:</b> @Model.Id<br>
+                    <b>@Resources.Content_PaymentTime:</b> @DateTime.Now.ToString("f")<br>
+                    <b>@Resources.Content_PayeeId:</b> @Support.GetCurrentAdmin().Id
+                </div>
+            }
+
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <!-- Table row -->
+        <div class="row">
+            @if (Model.Customer != null)
+            {
+                <div class="col-xs-12 table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>@Resources.Content_Table</th>
+                            <th>@Resources.Content_Date</th>
+                            <th>@Resources.Content_Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var orderDetails in Model.OrderDetails.Where(x => x.Food == null).OrderBy(x => x.TableId))
+                        {
+                            <tr>
+                                <td>@orderDetails.Table.Name</td>
+                                <td>@orderDetails.OrderTime.Value.ToString("d")</td>
+                                <td>@orderDetails.OrderTime.Value.ToString("hh:mm tt")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>@Resources.Content_Table</th>
+                        @*<th>@Resources.Content_Time</th>*@
+                        <th>@Resources.Content_Food</th>
+                        <th>@Resources.Content_Unit</th>
+                        <th>@Resources.Content_Price</th>
+                        <th>@Resources.Content_Qty</th>
+                        <th>@Resources.Content_SubTotal</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var orderDetails in Model.OrderDetails.Where(x => x.Food != null).OrderBy(x => x.TableId))
+                    {
+                        <tr>
+                            <td>@orderDetails.Table.Name</td>
+                            @*<td>@(orderDetails.OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt"))</td>*@
+                            <td>@orderDetails.Food.Name</td>
+                            <td>@orderDetails.Food.Unit</td>
+                            <td>@orderDetails.Food.Price.ToString("c", culture)</td>
+                            <td>@orderDetails.Quantity</td>
+                            <td>@orderDetails.Subtotal.Value.ToString("c", culture)</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-xs-6 pull-right">
+                <p class="lead">@Resources.Content_AmountDue @DateTime.Now.ToString("d")</p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th style="width: 50%">@Resources.Content_SubTotal</th>
+                            <td>@Model.SubTotal.ToString("C", culture)</td>
+                        </tr>
+                        <tr>
+                            <th>@Resources.Content_Discount</th>
+                            <td>@Model.Discount.Value.ToString("c", culture) <a class="pull-right">@discount.Value%</a></td>
+                        </tr>
+                        <tr>
+                            <th>@Resources.Content_Tax</th>
+                            <td>@Model.Tax.Value.ToString("c", culture) <a class="pull-right">@tax.Value%</a></td>
+                        </tr>
+                        @if (Model.DepositPrice.HasValue)
+                        {
+                            var total = Model.SubTotal - Model.Discount.Value + Model.Tax.Value - Model.DepositPrice.Value;
+                            <tr>
+                                <th>@Resources.Content_Deposit</th>
+                                <td>@Model.DepositPrice.Value.ToString("c", culture)</td>
+                            </tr>
+                            <tr>
+                                <th>@Resources.Content_Total</th>
+                                @if (total > 0)
+                                {
+                                    <td>@total.ToString("c", culture)</td>
+                                }
+                                else
+                                {
+                                    <td class="text-red">- @total.ToString("c", culture)</td>
+                                }
+
+                            </tr>
+                        }
+                        else
+                        {
+                            var total = Model.SubTotal - Model.Discount.Value + Model.Tax.Value - Model.DepositPrice.Value;
+                            <tr>
+                                <th>@Resources.Content_Total</th>
+                                <td>@total.ToString("C", culture)</td>
+                            </tr>
+                        }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row no-print">
+            <div class="col-xs-12">
+                <button type="button" class="btn btn-success pull-left" onclick="location.href = '@Url.Action("PrintInvoice", "Orders", new {orderId = Model.Id})'">
+                    <i class="fa fa-credit-card"></i> @Resources.Content_PayAndPrint
+                </button>
+                <button type="button" class="btn btn-success pull-right" onclick="location.href = '@Url.Action("Pay", "Orders", new {orderId = Model.Id})'">
+                    <i class="fa fa-credit-card"></i> @Resources.Content_SubminPayment
+                </button>
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <section class="invoice">
+        <!-- title row -->
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="page-header">
+                    <i class="fa fa-globe"></i> @web.WebLongName
+                    <small class="pull-right">@Resources.Content_Date: @DateTime.Now.ToString("d")</small>
+                </h2>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- info row -->
+        <div class="row invoice-info">
+            @if (Model.Customer != null)
+                {
+                <div class="col-sm-4 invoice-col">
+                    @Resources.Content_RestaurantInfo
+                    <address>
+                        <strong>@web.WebLongName</strong><br>
+                        @web.Address<br>
+                        @Resources.Content_Phone: @web.Phone<br>
+                        @Resources.Content_Email: @web.Email
+                    </address>
+                </div>
+                    <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                    @Resources.Content_CustomerInfo
+                    <address>
+                        <strong>@Model.Customer.FullName</strong><br>
+                        @Model.Customer.Address<br>
+                        @Resources.Content_Phone: @Model.Customer.Phone<br>
+                        @Resources.Content_Email: @Model.Customer.Email
+                    </address>
+                </div>
+                    <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                    <b>@Resources.Content_InvoiceInfo</b><br>
+                    <br>
+                    <b>@Resources.Content_OrderID:</b> @Model.Id<br>
+                    <b>@Resources.Content_PaymentTime:</b> @DateTime.Now.ToString("f")<br>
+                    <b>@Resources.Content_PayeeId:</b> @Support.GetCurrentAdmin().Id
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-6 invoice-col">
+                    @Resources.Content_RestaurantInfo
+                    <address>
+                        <strong>@web.WebLongName</strong><br>
+                        @web.Address<br>
+                        @Resources.Content_Phone: @web.Phone<br>
+                        @Resources.Content_Email: @web.Email
+                    </address>
+                </div>
+                    <!-- /.col -->
+                <div class="col-sm-6 invoice-col">
+                    <b>@Resources.Content_InvoiceInfo</b><br>
+                    <br>
+                    <b>@Resources.Content_OrderID:</b> @Model.Id<br>
+                    <b>@Resources.Content_PaymentTime:</b> @DateTime.Now.ToString("f")<br>
+                    <b>@Resources.Content_PayeeId:</b> @Support.GetCurrentAdmin().Id
+                </div>
+            }
+
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <!-- Table row -->
+        <div class="row">
+            @if (Model.Customer != null)
+            {
+                <div class="col-xs-12 table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>@Resources.Content_Table</th>
+                                <th>@Resources.Content_Date</th>
+                                <th>@Resources.Content_Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orderDetails in Model.OrderDetails.Where(x => x.Food == null).OrderBy(x => x.TableId))
+                            {
+                                <tr>
+                                    <td>@orderDetails.Table.Name</td>
+                                    <td>@orderDetails.OrderTime.Value.ToString("d")</td>
+                                    <td>@orderDetails.OrderTime.Value.ToString("hh:mm tt")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Resources.Content_Table</th>
+                            <th>@Resources.Content_Time</th>
+                            <th>@Resources.Content_Food</th>
+                            <th>@Resources.Content_Unit</th>
+                            <th>@Resources.Content_Price</th>
+                            <th>@Resources.Content_Qty</th>
+                            <th>@Resources.Content_SubTotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var orderDetails in Model.OrderDetails.Where(x => x.Food != null).OrderBy(x => x.TableId))
+                        {
+                            <tr>
+                                <td>@orderDetails.Table.Name</td>
+                                <td>@orderDetails.OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt")</td>
+                                <td>@orderDetails.Food.Name</td>
+                                <td>@orderDetails.Food.Unit</td>
+                                <td>@orderDetails.Food.Price.ToString("c", culture)</td>
+                                <td>@orderDetails.Quantity</td>
+                                <td>@orderDetails.Subtotal.Value.ToString("c", culture)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-xs-6 pull-right">
+                <p class="lead">@Resources.Content_AmountDue @DateTime.Now.ToString("d")</p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th style="width: 50%">@Resources.Content_SubTotal</th>
+                                <td>@Model.SubTotal.ToString("C", culture)</td>
+                            </tr>
+                            <tr>
+                                <th>@Resources.Content_Discount</th>
+                                <td>@Model.Discount.Value.ToString("c", culture) <a class="pull-right">@discount.Value%</a></td>
+                            </tr>
+                            <tr>
+                                <th>@Resources.Content_Tax</th>
+                                <td>@Model.Tax.Value.ToString("c", culture) <a class="pull-right">@tax.Value%</a></td>
+                            </tr>
+                            @if (Model.DepositPrice.HasValue)
+                            {
+                                var total = Model.SubTotal - Model.Discount.Value + Model.Tax.Value - Model.DepositPrice.Value;
+                                <tr>
+                                    <th>@Resources.Content_Deposit</th>
+                                    <td>@Model.DepositPrice.Value.ToString("c", culture)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Resources.Content_Total</th>
+                                    @if (total > 0)
+                                    {
+                                        <td>@total.ToString("c", culture)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-red">- @total.ToString("c", culture)</td>
+                                    }
+
+                                </tr>
+                            }
+                            else
+                            {
+                                var total = Model.SubTotal - Model.Discount.Value + Model.Tax.Value - Model.DepositPrice.Value;
+                                <tr>
+                                    <th>@Resources.Content_Total</th>
+                                    <td>@total.ToString("C", culture)</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+}

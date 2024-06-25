@@ -1,0 +1,345 @@
+﻿@using System.Globalization
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Order
+@{
+    ViewBag.Title = Resources.Content_Update;
+    var locale = new CultureInfo("en-US");
+    var updateTableString = "";
+}
+<!-- /.box-header -->
+<link rel="stylesheet" href="~/Content/css/select2.min.css" />
+<!-- Theme style -->
+<link rel="stylesheet" href="~/Content/css/AdminLTE.min.css">
+<!--Icheck-->
+<link rel="stylesheet" href="~/Content/css/all.css">
+
+<link rel="stylesheet" href="~/Content/css/datepicker3.css" />
+<link rel="stylesheet" href="~/Content/css/bootstrap-timepicker.min.css" />
+@if (Model.CustomerId > 0)
+{
+    <div class="box box-primary">
+        <div class="box-header with-border row" style="margin-left: 20px">
+            <div class="col-sm-5 invoice-col">
+                <b>@Resources.Content_CustomerInfo</b>
+
+                <address>
+                    @Model.Customer.FullName<br>
+                    @Model.Customer.Address<br>
+                    @Resources.Content_Phone: @Model.Customer.Phone<br>
+                    @Resources.Content_Email: @Model.Customer.Email
+                </address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-7 invoice-col">
+                <b>@Resources.Content_InvoiceInfo</b>
+                <b>@Resources.Content_OrderID:</b> @Model.Id<br>
+                <b>@Resources.Content_CreationTime:</b> @Model.CreationTime.ToString("f")<br>
+                <b>@Resources.Content_Deposit:</b> @Model.DepositPrice.Value.ToString("c", locale)<br>
+                <b>@Resources.Content_Total:</b> @Model.SubTotal.ToString("c", locale)<br>
+            </div>
+        </div>
+        <div class="box-body">
+            <table class="table table-hover">
+                <tr>
+                    <th>@Resources.Content_Table</th>
+                    <th>@Resources.Content_OrderTime</th>
+                </tr>
+                @foreach (var item in Model.OrderDetails.Where(x => x.Food == null))
+                {
+                <tr id="@item.Id" class="tableBooking">
+                    <td>
+                        <div class="form-group">
+                            <select class="form-control select2Update select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                                @foreach (var table in GetSelectList.GetTableSelectList().OrderBy(x => x.Value))
+                                {
+                                    if (item.TableId.ToString() == table.Value)
+                                    {
+                                        <option value="@table.Value" selected="selected">@table.Text</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@table.Value">@table.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                    </td>
+                    <td>
+                        <div class="form-group row">
+                            <div class="bootstrap-timepicker form-group col-md-4">
+                                <div class="bootstrap-timepicker-widget dropdown-menu">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td><a href="javascript:void(0)" data-action="incrementHour"><i class="glyphicon glyphicon-chevron-up"></i></a></td>
+                                                <td class="separator">&nbsp;</td>
+                                                <td><a href="javascript:void(0)" data-action="incrementMinute"><i class="glyphicon glyphicon-chevron-up"></i></a></td>
+                                                <td class="separator">&nbsp;</td>
+                                                <td class="meridian-column"><a href="javascript:void(0)" data-action="toggleMeridian"><i class="glyphicon glyphicon-chevron-up"></i></a></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="bootstrap-timepicker-hour">@item.OrderTime.Value.Hour</span></td>
+                                                <td class="separator">:</td>
+                                                <td>
+                                                    <span class="bootstrap-timepicker-minute">@item.OrderTime.Value.Minute</span>
+                                                </td>
+                                                <td class="separator">&nbsp;</td>
+                                                <td><span class="bootstrap-timepicker-meridian"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="javascript:void(0)" data-action="decrementHour">
+                                                        <i class="glyphicon glyphicon-chevron-down"></i>
+                                                    </a>
+                                                </td>
+                                                <td class="separator"></td>
+                                                <td>
+                                                    <a href="javascript:void(0)" data-action="decrementMinute">
+                                                        <i class="glyphicon glyphicon-chevron-down"></i>
+                                                    </a>
+                                                </td>
+                                                <td class="separator">&nbsp;</td>
+                                                <td>
+                                                    <a href="javascript:void(0)" data-action="toggleMeridian">
+                                                        <i class="glyphicon glyphicon-chevron-down"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-clock-o"></i>
+                                    </div>
+                                    <input type="text" class="form-control timepickerUpdate" value="@item.OrderTime.Value.ToString("hh:mm tt")">
+                                </div>
+                            </div>
+                            <div class="input-group col-md-4">
+                                <input type="text" class="form-control datepickerUpdate" value="@item.OrderTime.Value.ToString("MM/dd/yyyy")">
+
+                                <div class="input-group-addon">
+                                    <i class="fa fa-clock-o"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                }
+            </table>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" onclick="location.href='@Url.Action("BookingList","Orders")'" >@Resources.Content_Back</button>
+            <button id="btnUpdate" type="button" class="btn btn-primary bg-blue">@Resources.Content_Update</button>
+        </div>
+    </div>
+    <script src="~/scripts/select2.full.min.js"></script>
+    <script src="~/scripts/jquery.inputmask.js"></script>
+        <script src="~/Scripts/icheck.min.js"></script>
+        <script src="~/Scripts/bootstrap-datepicker.js"></script>
+        <script src="~/Scripts/bootstrap-timepicker.min.js"></script>
+        <script>
+            $(".select2Update").select2();
+            $('.datepickerUpdate').datepicker({
+                format: 'mm/dd/yyyy',
+                startDate: new Date()
+            });
+            $(".timepickerUpdate")
+            .timepicker({
+                showInputs: false
+            });
+            $('#btnUpdate')
+            .click(function () {
+                UpdateOrders();
+            });
+            function UpdateOrders(){
+                var tableList = [];
+                $('.tableBooking')
+                    .each(function () {
+                        tableList.push({
+                            Id: $(this).attr("id"),
+                            TableId:$($($($(this).children()[0]).children()[0]).children()[0]).val(),
+                            OrderTime:$($($($($(this).children()[1]).children()[0]).children()[1]).children()[0]).val() + " " +$($($($($($(this).children()[1]).children()[0]).children()[0]).children()[2]).children()[1]).val(),
+                        });
+                    });
+                if (tableList.length > 0) {
+                    var orderModel = {
+                        OrderId: @Model.Id,
+                        TableString: $("#updateTableString").val(),
+                        Orderdetails: tableList
+                    }
+
+                    $.ajax({
+                        url: "@Url.Action("UpdateOrder","Orders")",
+                        type: "POST",
+                    data: orderModel,
+                    success: function (data) {
+                        ShowMessage(data);
+                    },
+                    error: function () {
+                        ConnectionError();
+                    }
+                });
+            }
+            }
+        </script>
+}
+else
+{
+    <div class="box box-primary">
+        <!-- /.col -->
+        <div class="box-header with-border row" style="margin-left: 20px">
+            <div class="invoice-col">
+                <b>@Resources.Content_InvoiceInfo</b>
+                <br>
+                <b>@Resources.Content_OrderID:</b> @Model.Id<br>
+                <b>@Resources.Content_CreationTime:</b> @Model.CreationTime.ToString("f")<br>
+                <b>@Resources.Content_Total:</b> @Model.SubTotal.ToString("c", locale)<br>
+            </div>
+        </div>
+        <div class="box-header">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <div class="form-group">
+                        <label>@Resources.Content_Tables: @Model.OrderDetails.GroupBy(x => x.Table).Count()</label>
+                        <select id="selectTables" class="form-control select2Update select2Update-hidden-accessible" multiple="" data-placeholder="@Resources.Content_Tables" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            @foreach (var item in GetSelectList.GetTableSelectList().OrderBy(x => x.Value))
+                            {
+                                if (Model.OrderDetails.Any(x => x.Table.Id.ToString() == item.Value))
+                                {
+                                    updateTableString += item.Value + ",";
+                                    <option value="@item.Value" selected="selected">@item.Text</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                        <input type="hidden" name="updateTableString" id="updateTableString" value="@updateTableString" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.col -->
+        <div class="box-body table-responsive">
+            <table class="table table-hover">
+                <tbody>
+                    <tr>
+                        <th>@Resources.Content_Table</th>
+                        <th>@Resources.Content_Time</th>
+                        <th>@Resources.Content_Name</th>
+                        <th class="text-center">@Resources.Content_Price</th>
+                        <th class="text-center">@Resources.Content_Number</th>
+                    </tr>
+                    @foreach (var orderDetails in Model.OrderDetails)
+                {
+                    if (orderDetails.Food != null)
+                    {
+                            <tr>
+                                <td>@orderDetails.Table.Name</td>
+                                <td>@orderDetails.OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt")</td>
+                                <td>@orderDetails.Food.Name</td>
+                                <td class="text-center">@orderDetails.FoodPrice.Value.ToString("c", locale)</td>
+                                <td class="text-center">
+                                    <ul class="pagination pagination-sm no-margin numberFood" data-max="@orderDetails.Food.Quantity" data-number="@orderDetails.Quantity" data-details-id="@orderDetails.Id">
+                                        <li><a href="javascript:void(0)" class="subone">-</a></li>
+                                        <li><a href="javascript:void(0)" class="bg-light-blue-active">@orderDetails.Quantity</a></li>
+                                        <li><a href="javascript:void(0)" class="addone">+</a></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" onclick="location.href='@Url.Action("Index","Orders")'">@Resources.Content_Back</button>
+            <button id="btnUpdate" type="button" class="btn btn-primary bg-blue">@Resources.Content_Update</button>
+        </div>
+    </div>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="~/scripts/select2.full.min.js"></script>
+    <script src="~/scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/icheck.min.js"></script>
+    <script>
+        $(".select2Update").select2();
+
+        $('#selectTables').change(
+            function () {
+                var val = "";
+                $('#selectTables option:selected')
+                    .each(function (i, selected) {
+                        val += $(selected).val() + ",";
+                    });
+                $('#updateTableString').val(val);
+            });
+
+        $('.subone')
+            .click(function () {
+                var foodNumber = $(this).parents().parents();
+                var value = $(foodNumber).data("number");
+                if (value > 0) {
+                    value = value - 1;
+                    $(foodNumber).data("number", value);
+                    foodNumber.children().eq(1).children(0).eq(0).text(value);
+                }
+            });
+        $('.addone')
+            .click(function () {
+                var foodNumber = $(this).parents().parents();
+                var value = $(foodNumber).data("number");
+                var max = $(foodNumber).data("max");
+                if (value < max) {
+                    value = value + 1;
+                    $(foodNumber).data("number", value);
+                    foodNumber.children().eq(1).children(0).eq(0).text(value);
+                }
+            });
+        $('#btnUpdate')
+            .click(function () {
+                UpdateOrders();
+            });
+
+
+        function UpdateOrders() {
+            var foodList = [];
+            $('.numberFood')
+                .each(function () {
+                    foodList.push({
+                        //As order details id
+                        Id: $(this).data("details-id"),
+                        Quantity: $(this).data("number")
+                    });
+                });
+            if (foodList.length > 0 && $("#updateTableString").val().length > 1) {
+                var orderModel = {
+                    OrderId: @Model.Id,
+                    TableString: $("#updateTableString").val(),
+                    FoodList: foodList
+                }
+
+                $.ajax({
+                    url: "@Url.Action("UpdateOrder","Orders")",
+                    type: "POST",
+                    data: orderModel,
+                    success: function (data) {
+                        ShowMessage(data); 
+                    },
+                    error: function () {
+                        ConnectionError();
+                    }
+                });
+            }
+        }
+
+    </script>
+
+}
+

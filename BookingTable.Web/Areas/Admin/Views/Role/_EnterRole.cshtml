@@ -1,0 +1,122 @@
+﻿@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Models.RoleModel
+
+<link rel="stylesheet" href="~/Content/css/select2.min.css" />
+<!-- Theme style -->
+<link rel="stylesheet" href="~/Content/css/AdminLTE.min.css">
+<!--Icheck-->
+<link rel="stylesheet" href="~/Content/css/all.css">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    @if (Model.Id > 0)
+    {
+        <h4 class="modal-title">@Resources.Content_Update</h4>
+    }
+    else
+    {
+        <h4 class="modal-title">@Resources.Content_New</h4>
+    }
+</div>
+<div class="modal-body">
+    <form id="formRole">
+        <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+        <div class="form-group">
+            <label for="Name">@Resources.Content_Name</label>
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = Resources.Content_Name })
+        </div>
+        <div class="form-group">
+            <div class="form-group">
+                <label>@Resources.Content_Permission</label>
+                <select id="selectPermissions" class="form-control select2 select2-hidden-accessible" multiple="" data-placeholder="@Resources.Content_Permission" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    @if (Model.Permissions == null)
+                    {
+                        foreach (var item in GetSelectList.GetPermissionsSelectList())
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in GetSelectList.GetPermissionsSelectList())
+                        {
+                            if (Model.Permissions.Any(x => x.Code.Equals(item.Value)))
+                            {
+
+                                <option value="@item.Value" selected="selected">@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    }
+
+                </select>
+                <input type="hidden" name="PermissionString" id="PermissionString" value="@Model.PermissionString" />
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button id="btnSave" type="button" class="btn btn-primary bg-blue">@Resources.Content_Save</button>
+</div>
+<!-- Bootstrap 3.3.6 -->
+<script src="~/scripts/select2.full.min.js"></script>
+<script>
+    //Select 2
+    $(".select2").select2();
+
+    $('#selectPermissions').change(
+        function () {
+            var val = "";
+            $('#selectPermissions option:selected')
+                .each(function (i, selected) {
+                    val += $(selected).val() + ",";
+                });
+            $('#PermissionString').val(val);
+        });
+    $(document)
+        .ready(function () {
+            jQuery.validator.addMethod("noSpaceOnly", function (value, element) {
+                return value.trim(' ') !== "";
+            }, '@Resources.Validate_Required');
+            $('#formRole')
+                .validate({
+                    rules: {
+                        Name: {
+                            maxlength: 32,
+                            noSpaceOnly: true
+                        }
+                    },
+                    messages: {
+                        Name: {
+                            maxlength: '@string.Format(Resources.Validate_LenghtMax, 32)'
+                        }
+                    }
+
+                });
+            $('#btnSave')
+                .click(function () {
+                    if ($('#formRole').valid()) {
+                        $.ajax({
+                            url: '@Url.Action("Enter", "Role")',
+                            type: 'POST',
+                            data: $('#formRole').serialize(),
+                            success: function (data) {
+                                ShowMessage(data);
+                            },
+                            error: function () {
+                                ConnectionError();
+                            }
+                        });
+                    }
+                });
+
+        });
+
+</script>
+

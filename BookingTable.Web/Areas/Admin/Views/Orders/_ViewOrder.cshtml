@@ -1,0 +1,112 @@
+﻿@using System.Globalization
+@using BookingTable.Web.Resources
+@model List<BookingTable.Entities.Entities.Order>
+@{
+    var culture = new CultureInfo("en-US");
+    int currentOrders = ViewBag.CurrentOrders;
+}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_ViewOrders</h4>
+</div>
+<!-- /.box-header -->
+<div class="box-body">
+    <div class="table-responsive">
+        <table class="table no-margin">
+            <thead>
+                <tr>
+                    <th>@Resources.Content_Time</th>
+                    <th>@Resources.Content_Name</th>
+                    <th>@Resources.Content_Total</th>
+                    <th>@Resources.Content_Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                    if (i == currentOrders)
+                    {
+                        if (Model[i].Completed != true)
+                        {
+                            <tr id="@Model[i].Id">
+                                <td><a href="@Url.Action("UpdateOrder", "Orders", new {orderId = Model[i].Id})" class="text-red"><b>@(Model[i].Customer != null ? "(*)"+Model[i].OrderDetails.Where(x => x.Food == null).OrderBy(x => x.OrderTime).First().OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt") : Model[i].OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt"))</b></a></td>
+                                <td>@Model[i].Name</td>
+                                <td>@Model[i].SubTotal.ToString(culture)</td>
+                                @if (Model[i].Completed != true)
+                                {
+                                    <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})"><span class="label label-danger">@Resources.Content_Uncompleted</span></a></td>
+                                }
+                                else
+                                {
+                                    <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})"><span class="label label-success">@Resources.Content_Completed</span></a></td>
+                                }
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr id="@Model[i].Id">
+                                <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})" class="text-red"><b>@(Model[i].Customer != null ? "(*)" + Model[i].OrderDetails.Where(x => x.Food == null).OrderBy(x => x.OrderTime).First().OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt") : Model[i].OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt"))</b></a></td>
+                                <td>@Model[i].Name</td>
+                                <td>@Model[i].SubTotal.ToString(culture)</td>
+                                @if (Model[i].Completed != true)
+                                {
+                                    <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})"><span class="label label-danger">@Resources.Content_Uncompleted</span></a></td>
+                                }
+                                else
+                                {
+                                    <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})"><span class="label label-success">@Resources.Content_Completed</span></a></td>
+                                }
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        if (Model[i].Completed != true)
+                        {
+                            <tr id="@Model[i].Id">
+                                <td><a href="@Url.Action("UpdateOrder", "Orders", new {orderId = Model[i].Id})" class="text-red">@(Model[i].Customer != null ? "(*)" + Model[i].OrderDetails.Where(x => x.Food == null).OrderBy(x => x.OrderTime).First().OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt") : Model[i].OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt"))</a></td>
+                                <td>@Model[i].Name</td>
+                                <td>@Model[i].SubTotal.ToString(culture)</td>
+                                @if (Model[i].Completed != true)
+                                {
+                                    <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})"><span class="label label-danger">@Resources.Content_Uncompleted</span></a></td>
+                                }
+                                else
+                                {
+                                    <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})"><span class="label label-success">@Resources.Content_Completed</span></a></td>
+                                }
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr id="@Model[i].Id">
+                                <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})">@(Model[i].Customer != null ? "(*)" + Model[i].OrderDetails.Where(x => x.Food == null).OrderBy(x => x.OrderTime).First().OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt") : Model[i].OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt"))</a></td>
+                                <td>@Model[i].Name</td>
+                                <td>@Model[i].SubTotal.ToString(culture)</td>
+                                @if (Model[i].Completed != true)
+                                {
+                                    <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})"><span class="label label-danger">@Resources.Content_Uncompleted</span></a></td>
+                                }
+                                else
+                                {
+                                    <td><a href="@Url.Action("Details", "Orders", new {orderId = Model[i].Id})"><span class="label label-success">@Resources.Content_Completed</span></a></td>
+                                }
+                            </tr>
+                        }
+
+                    }
+
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+    <!-- /.table-responsive -->
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary bg-blue" onclick="location.href='@Url.Action("OrdersOfTable","Orders", new {tableId = ViewBag.TableId})'">@Resources.Content_ViewAll</button>
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+</div>

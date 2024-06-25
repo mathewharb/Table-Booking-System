@@ -1,0 +1,78 @@
+﻿@using BookingTable.Entities.Enum
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Models.PaypalSettingModel
+@{
+    ViewBag.Title = Resources.Content_Paypal;
+}
+<form id="formSetting">
+    <div class="box-body">
+        <div class="form-group col-md-6 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="PaypalEmail">@Resources.Content_Email</label>
+                @Html.TextBoxFor(x => x.PaypalEmail, new { @class = "form-control", placeholder = Resources.Content_Email })
+            </div>
+            <div class="form-group">
+                <label for="PDTToken">@Resources.Content_PDTToken</label>
+                @Html.TextBoxFor(x => x.PDTToken, new { @class = "form-control", placeholder = Resources.Content_PDTToken })
+            </div>
+            <div class="form-group">
+                <label for="Live">@Resources.Content_Mode</label>
+                <select class="form-control valid" id="Live" name="Live" aria-invalid="false">
+                    @if (Model.Live)
+                    {
+                        <option value="true">Live</option>
+                        <option value="false">SandBox</option>
+                    }
+                    else
+                    {
+                        <option value="false">SandBox</option>
+                        <option value="true">Live</option>
+
+                    }
+
+                </select>
+            </div>
+            <div>
+                <button id="btnSave" type="button" class="btn btn-primary pull-left">@Resources.Content_Save</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        jQuery.validator.addMethod("noSpaceOnly", function (value, element) {
+            return value.trim(' ') !== "";
+        }, '@Resources.Validate_Required');
+
+        $("#formSetting")
+            .validate({
+                rules: {
+                    PaypalEmail:
+                    {
+                        noSpaceOnly: true,
+                    },
+                    PDTToken:
+                    {
+                        noSpaceOnly: true
+                    }
+                }
+            });
+        $("#btnSave")
+            .click(function () {
+                if ($("#formSetting").valid()) {
+                    $.ajax({
+                        url: '@Url.Action("SavePaypalSetting", "Setting")',
+                        type: 'POST',
+                        data: $('#formSetting').serialize(),
+                        success: function (data) {
+                            ShowMessage(data);
+                        },
+                        error: function () {
+                            ConnectionError();
+                        }
+                    });
+                }
+            });
+    });
+
+</script>

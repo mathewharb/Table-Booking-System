@@ -1,0 +1,115 @@
+﻿@using System.Globalization
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Order
+@{
+    ViewBag.Title = Resources.Content_Print;
+    var web = WebSetting.GetWebContent();
+    var culture = new CultureInfo("en-US");
+}
+
+<body onload="window.print();">
+    <div class="wrapper">
+        <!-- Main content -->
+        <section class="invoice" style="margin-left: 30px">
+            <!-- title row -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="page-header">
+                        <i class="fa fa-globe"></i>@web.WebLongName
+                        <small class="pull-right">@Resources.Content_Date: @DateTime.Now</small>
+                    </h2>
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- info row -->
+            <div class="row invoice-info">
+                <!-- /.col -->
+                <div class="row">
+                    <b>@Resources.Content_InvoiceInfo</b><br>
+                    @Resources.Content_OrderID: @Model.Id<br>
+                    @Resources.Content_PaymentTime: @DateTime.Now.ToString("f")<br>
+                    @Resources.Content_PayeeId:@Support.GetCurrentAdmin().Id
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- Table row -->
+            <div class="row">
+                <div class="col-xs-12 table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>@Resources.Content_Table</th>
+                                <th>@Resources.Content_Food</th>
+                                <th>@Resources.Content_Price</th>
+                                <th>@Resources.Content_Qty</th>
+                                <th>@Resources.Content_SubTotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orderDetails in Model.OrderDetails.Where(x=>x.Food != null).OrderBy(x => x.TableId))
+                            {
+                                <tr>
+                                    <td>@orderDetails.Table.Name</td>
+                                    <td>@orderDetails.Food.Name</td>
+                                    <td>@orderDetails.Food.Price.ToString("c", culture)</td>
+                                    <td>@orderDetails.Quantity</td>
+                                    <td>@orderDetails.Subtotal.Value.ToString("c", culture)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                    <p class="lead">@Resources.Content_AmountDue @DateTime.Today</p>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th style="width:50%">@Resources.Content_SubTotal:</th>
+                                <td>@Model.SubTotal</td>
+                            </tr>
+                            <tr>
+                                <th>@Resources.Content_Discount</th>
+                                <td>-@Model.Discount</td>
+                            </tr>
+                            <tr>
+                                <th>@Resources.Content_Tax</th>
+                                <td>+@Model.Tax</td>
+                            </tr>
+                            <tr>
+                                <th>@Resources.Content_Deposit</th>
+                                <td>-@Model.DepositPrice</td>
+                            </tr>
+                            <tr>
+                                <th>@Resources.Content_Total:</th>
+                                @if (Model.SubTotal == 0)
+                                {
+                                    <td>0</td>
+                                }
+                                else
+                                {
+                                    <td>@(Model.SubTotal - Model.Discount - Model.DepositPrice + Model.Tax)</td>
+                                }
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.col -->
+            <!-- /.row -->
+            <div class="row invoice-info">
+                @Resources.Content_RestaurantInfo
+                <address>
+                    <strong>@web.WebLongName</strong><br>
+                    @web.Address<br>
+                    @Resources.Content_Phone: @web.Phone<br>
+                    @Resources.Content_Email: @web.Email
+                </address>
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- ./wrapper -->
+</body>

@@ -1,0 +1,110 @@
+﻿@using BookingTable.Web.Resources
+@model IEnumerable<BookingTable.Entities.Entities.Role>
+@{
+    ViewBag.Title = Resources.Content_Role;
+}
+
+<div class="box box-primary">
+    <div class="box-header">
+        <div class="form-group">
+            <button id="btnAddRole" type="button" class="btn btn-default btn-flat pull-right">@Resources.Content_New</button>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+        <table id="tableRole" class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width:100px">
+                        <a><i class="fa fa-cogs"></i></a>
+                    </th>
+                    <th>@Resources.Content_Name</th>
+                    <th>@Resources.Content_Permission</th>
+                    <th>@Resources.Content_Staffs</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                     {
+                    <tr id="@r.Id">
+                        <td>
+                            <a href="javascript:void(0)" class="editRole"><i class="fa fa-edit"></i></a>
+                            <label style="width: 20px"></label>
+                            <a href="javascript:void(0)" class="deleteRole"><i class="fa fa-remove"></i></a>
+                        </td>
+                        <td>@r.Name</td>
+                        <td>
+                            @if (r.Permissions != null && r.Permissions.Count > 0)
+                            {
+                                <text>@r.Permissions.ToList()[0].Code</text>
+
+                                for (int i = 1; i < r.Permissions.Count; i++)
+                                {
+                                    <text> - @r.Permissions.ToList()[i].Code</text>
+                                }
+                            }
+                        </td>
+                        @if (r.Admins != null)
+                        {
+                            <td>
+                                @r.Admins.Count()
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                0
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document)
+        .ready(function () {
+
+            $('#tableRole').DataTable();
+        });
+
+    $('#btnAddRole')
+               .click(function () {
+                   EnterRole(0);
+               });
+    $('.editRole')
+        .click(function () {
+            EnterRole($(this).parents().parents().attr('id'));
+        });
+    $('.deleteRole')
+        .click(function () {
+            DeleteRole($(this).parents().parents().attr('id'));
+        });
+
+    function EnterRole(id) {
+        $.ajax({
+            url: '@Url.Action("Enter", "Role")/?id=' + id,
+            type: 'GET',
+            success: function (data) {
+                ShowPopup(data);
+            },
+            error: function () {
+                ConnectionError();
+            }
+        });
+    }
+
+    function DeleteRole(id) {
+        $.ajax({
+            url: '@Url.Action("Delete", "Role")/?id=' + id,
+            type: 'GET',
+            success: function (data) {
+                ShowPopup(data);
+            },
+            error: function () {
+                ConnectionError();
+            }
+        });
+    }
+</script>

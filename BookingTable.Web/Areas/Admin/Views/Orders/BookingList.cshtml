@@ -1,0 +1,54 @@
+﻿@using BookingTable.Web.Resources
+@model IEnumerable<BookingTable.Entities.Entities.Order>
+@{
+    ViewBag.Title = Resources.Content_Booking;
+}
+<div class="box box-primary">
+    <div class="box-header">
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+        <table id="bookingTable" class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width:100px">
+                        <a><i class="fa fa-cogs"></i></a>
+                    </th>
+                    <th>@Resources.Content_Time</th>
+                    <th>@Resources.Content_Customer</th>
+                    <th>@Resources.Content_Email</th>
+                    <th>@Resources.Content_Tables</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr id="@item.Id">
+                        <td>
+                            <a href="@Url.Action("Details", "Orders", new {orderId = item.Id})"><i class="fa fa-file"></i></a>
+                            <label style="width: 20px;"></label>
+                            <a href="@Url.Action("UpdateOrder", "Orders", new {orderId = item.Id})"><i class="fa fa-edit"></i></a>
+                        </td>
+                        <td>@item.OrderDetails.Where(x => x.Food == null && (x.Completed == null || x.Completed.Value != true)).First().OrderTime.Value.ToString("MM/dd/yyyy hh:mm tt")</td>
+                        <td>@item.Customer.FullName</td>
+                        <td>@item.Customer.Email</td>
+                        <td>
+                            @foreach (var details in item.OrderDetails.Where(x => x.Food == null))
+                            {
+                                <span class="badge bg-green">@details.Table.Name</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<script>
+    $(document)
+        .ready(function () {
+
+            $('#bookingTable').DataTable();
+        });
+</script>

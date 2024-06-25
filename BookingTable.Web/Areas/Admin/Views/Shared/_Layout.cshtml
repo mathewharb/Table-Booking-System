@@ -1,0 +1,355 @@
+﻿@using BookingTable.Business.IRepository
+@using BookingTable.Business.Repository
+@using BookingTable.Entities.Entities
+@using BookingTable.Entities.Enum
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@{
+    var web = WebSetting.GetWebContent();
+    Admin admin = (Admin)Session["Admin"];
+    if (admin != null)
+    {
+        IAdminRepository adminRepository = new AdminRepository();
+        admin = adminRepository.Find(admin.Id);
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@web.WebLongName</title>
+    <link rel="icon" href="~/Content/images/favicon.png">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/css/AdminLTE.min.custom.css">
+    <!-- AdminLTE Skins -->
+    <link rel="stylesheet" href="~/Content/css/_all-skins.min.css">
+    <!-- Data tables -->
+    <link rel="stylesheet" href="~/Content/DataTables/css/jquery.dataTables.css">
+
+    <link rel="stylesheet" href="~/Content/css/common.css"/>
+</head>
+<body class="sidebar-mini skin-blue-light">
+    <div class="wrapper">
+        <!-- Header -->
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="@Url.Action("BookingList","Orders")" class="logo">
+                <span class="logo-mini"><img src="~/Content/images/logo.png" style="width: 40px; height: 40px"><b>@web.WebShortName</b></span>
+                <span class="logo-lg"><img src="~/Content/images/logo.png" style="width: 40px; height: 40px; margin-right: 15px"><b>@web.WebLongName</b></span>
+            </a>
+            <!-- /Logo -->
+            <!-- Navbar -->
+            <nav class="navbar navbar-static-top">
+                <!-- Toggle -->
+                <a href="javascript:void(0)" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <!-- /Toggle -->
+                <!-- Navbar Right -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- Account -->
+                        <li class="dropdown user user-menu">
+                            <a id="userDropdown" href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="@Support.GetPathPhotoFolder()/@admin.Image?dumb=@DateTime.Now.ToString("hhmmss")" class="user-image" alt="User Image">
+                                <span class="hidden-xs">@admin.FullName</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="user-header">
+                                    <img src="@Support.GetPathPhotoFolder()/@admin.Image?dumb=@DateTime.Now.ToString("hhmmss")" class="img-circle" alt="User Image">
+                                    <p>
+                                        @admin.FullName - @admin.Role.Name
+                                        <small>@admin.DateOfBirth.ToString("yyyy MMMM dd")</small>
+                                    </p>
+                                </li>
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="@Url.Action("ChangePassword","Admin")" class="btn btn-default btn-flat">@Resources.Content_Password</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="@Url.Action("LogOut","Login")" class="btn btn-default btn-flat">@Resources.Content_SignOut</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- /Account -->
+                    </ul>
+                </div>
+                <!-- /Navbar Right -->
+            </nav>
+            <!-- /Navbar -->
+        </header>
+        <!-- /Header -->
+        <!-- Left Menu -->
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="~/Content/images/clock.png" style="margin-left: 7px; width: 16px; height: 16px;"/>
+                    </div>
+                    <div class="pull-left info">
+                        <p id="clock" style="font-size: 16px"></p>
+                    </div>
+                </div>
+                <ul class="sidebar-menu">
+                    <li class="header">@Resources.Content_Menu.ToUpper()</li>
+                    @if (admin.Role.Permissions.Any(x => x.Code == PermissionEnum.Orders.ToString()))
+                    {
+                        <li class="treeview">
+                            <a href="@Url.Action("BookingList", "Orders")">
+                                <i class="fa fa-phone-square"></i>
+                                <span>@Resources.Content_Booking</span>
+                            </a>
+                        </li>
+                        <li class="treeview">
+                            <a href="@Url.Action("Index", "Orders")">
+                                <i class="fa fa-inbox"></i>
+                                <span>@Resources.Content_Orders</span>
+                            </a>
+                        </li>
+                    }
+                    @if (admin.Role.Permissions.Any(x => x.Code == PermissionEnum.Food.ToString()))
+                    {
+                        <li class="treeview">
+                            <a href="@Url.Action("Index", "Food")">
+                                <i class="fa fa-apple"></i>
+                                <span>@Resources.Content_Food</span>
+                            </a>
+                        </li>
+                    }
+                    @if (admin.Role.Permissions.Any(x => x.Code == PermissionEnum.Floor.ToString()))
+                    {
+                        <li class="treeview">
+                            <a href="@Url.Action("Index", "Floor")">
+                                <i class="fa fa-bars"></i>
+                                <span>@Resources.Content_Floor</span>
+                            </a>
+                        </li>
+                    }
+                    @if (admin.Role.Permissions.Any(x => x.Code == PermissionEnum.Table.ToString()))
+                    {
+                        <li class="treeview">
+                            <a href="javascript:void(0)">
+                                <i class="fa fa-th-large"></i>
+                                <span>@Resources.Content_Table</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="@Url.Action("Index", "Table")">
+                                        <i class="fa fa-th-large"></i>
+                                        @Resources.Content_TableList
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "TableType")">
+                                        <i class="fa fa-share-alt-square"></i>
+                                        @Resources.Content_Type
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    @if (admin.Role.Permissions.Any(x => x.Code == PermissionEnum.Admin.ToString()))
+                    {
+                        <li class="treeview">
+                            <a href="javascript:void(0)">
+                                <i class="fa fa-users"></i>
+                                <span>@Resources.Content_Staff</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="@Url.Action("Index", "Admin")">
+                                        <i class="fa fa-users"></i>
+                                        @Resources.Content_Staff
+                                    </a>
+                                </li>
+                                <li>
+                                <li class="treeview">
+                                    <a href="@Url.Action("Index", "Role")">
+                                        <i class="fa fa-share-alt-square"></i>
+                                        @Resources.Content_Role
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    @if (admin.Role.Permissions.Any(x => x.Code == PermissionEnum.Customer.ToString()))
+                    {
+                        <li class="treeview">
+                            <a href="@Url.Action("Index", "Customer")">
+                                <i class="fa fa-user-secret"></i>
+                                <span>@Resources.Content_Customer</span>
+                            </a>
+                        </li>
+                    }
+                    @if (admin.Role.Permissions.Any(x => x.Code == PermissionEnum.Setting.ToString()))
+                    {
+                        <li class="treeview">
+                            <a href="javascript:void(0)">
+                                <i class="fa fa-cog"></i>
+                                <span>@Resources.Content_Setting</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="@Url.Action("System","Setting")"><i class="fa fa-cogs"></i>@Resources.Content_System</a></li>
+                                <li><a href="@Url.Action("WebContent", "Setting")"><i class="fa fa-quote-left"></i>@Resources.Content_WebContent</a></li>
+                                <li><a href="@Url.Action("Paypal", "Setting")"><i class="fa fa-paypal"></i>@Resources.Content_Paypal</a></li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </section>
+        </aside>
+        <!-- /Left Menu -->
+    <!-- Content -->
+    <script>
+        function ConnectionError()
+        {
+            ShowMessage({ 'Title': "@Resources.Content_Error", 'Content': "@Resources.Message_Error_Connection", 'Type': '@MessageTypeEnum.Error.ToString()' });
+        }
+    </script>
+        <div class="content-wrapper">
+            <!-- Content Header -->
+            <section class="content-header">
+                <h1>
+                    @ViewBag.Title
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="javascript:void(0)"><i class="fa fa-dashboard"></i>@Resources.Content_Home</a></li>
+                    <li class="active">@ViewBag.Title</li>
+                </ol>
+            </section>
+            <!-- /Content Header -->
+            <!-- Popup -->
+            <div id="popupModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div id="popupContainer" class="modal-content">
+                    </div>
+                </div>
+            </div>
+            <div id="messageModal"  class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div id="messageContainer" class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 id="messageTitle" class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <p id="messageContent">
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline" data-dismiss="modal">@Resources.Content_Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="messageReloadModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div id="messageReloadContainer" class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 id="messageReloadTitle" class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <p id="messageReloadContent">
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline" data-dismiss="modal">@Resources.Content_Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Popup -->
+            <!-- Script for Content Body -->
+            <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+            <script src="~/Scripts/common.js"></script>
+            <!-- /Script for Content Body -->
+            <!-- Body -->
+            <section class="content">
+                @RenderBody()
+            </section>
+            <!-- /Body -->
+        </div>
+        <!-- /Content -->
+        <!-- Footer -->
+        <footer class="main-footer">
+            <strong> &copy; <a href="https://github.com/mathewharb">Mathew Harb</a>.</strong> All rights
+            reserved.
+        </footer>
+        <!-- /Footer -->
+    </div>
+
+    <!-- jQuery 2.2.3 -->
+    <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="~/Scripts/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Scripts/app.min.js"></script>
+    <!--Data tables-->
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <!-- Validate-->
+    <script src="~/scripts/jquery.validate.min.js"></script>
+    <script>
+        $(document)
+            .ready(function () {
+                startTime();
+
+                function startTime() {
+                    var today = new Date();
+
+                    var d = today.getDate();
+                    var M = today.getMonth()+1;
+                    var h = today.getHours();
+                    var m = today.getMinutes();
+                    var s = today.getSeconds();
+                    d = checkTime(d);
+                    M = checkTime(M);
+                    h = checkTime(h);
+                    m = checkTime(m);
+                    s = checkTime(s);
+                    $('#clock').html(d + "-" + M + " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>" + h + " : " + m + "</b><a> : " + s + "</a>");
+                    setTimeout(startTime, 900);
+                }
+                function checkTime(i) {
+                    if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+                    return i;
+                }
+            });
+        $('#messageReloadModal')
+            .on('hide.bs.modal',
+                function(e) {
+                    window.location.href = window.location.href
+                });
+        $('#popupModal')
+                   .on('hide.bs.modal',
+                       function (e) {
+                           $("#popupContainer").html("");
+                       });
+    </script>
+</body>
+</html>

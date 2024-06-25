@@ -1,0 +1,309 @@
+﻿@using System.Globalization
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@{
+    ViewBag.Title = Resources.Content_Orders;
+    var locale = new CultureInfo("en-US");
+    var time = @DateTime.Today;
+}
+<link rel="stylesheet" href="~/Content/css/select2.min.css" />
+<!-- Theme style -->
+<link rel="stylesheet" href="~/Content/css/AdminLTE.min.css">
+<!--Icheck-->
+<link rel="stylesheet" href="~/Content/css/all.css">
+
+<link rel="stylesheet" href="~/Content/css/datepicker3.css" />
+<link rel="stylesheet" href="~/Content/css/bootstrap-timepicker.min.css" />
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <div class="row">
+                <div class="form-group col-md-3 col-sm-6">
+                    <label>@Resources.Content_Date</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" class="form-control pull-right" id="date" value="@time.ToString("MM/dd/yyyy")">
+                    </div>
+                </div>
+                <div class="bootstrap-timepicker form-group col-md-3 col-sm-6">
+                    <label>@Resources.Content_Time</label>
+                    <div class="bootstrap-timepicker-widget dropdown-menu">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><a href="javascript:void(0)" data-action="incrementHour"><i class="glyphicon glyphicon-chevron-up"></i></a></td>
+                                    <td class="separator">&nbsp;</td>
+                                    <td><a href="javascript:void(0)" data-action="incrementMinute"><i class="glyphicon glyphicon-chevron-up"></i></a></td>
+                                    <td class="separator">&nbsp;</td>
+                                    <td class="meridian-column"><a href="javascript:void(0)" data-action="toggleMeridian"><i class="glyphicon glyphicon-chevron-up"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="bootstrap-timepicker-hour">@DateTime.Now.Hour</span></td>
+                                    <td class="separator">:</td>
+                                    <td>
+                                        <span class="bootstrap-timepicker-minute">@DateTime.Now.Minute</span>
+                                    </td>
+                                    <td class="separator">&nbsp;</td>
+                                    <td><span class="bootstrap-timepicker-meridian"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="javascript:void(0)" data-action="decrementHour">
+                                            <i class="glyphicon glyphicon-chevron-down"></i>
+                                        </a>
+                                    </td>
+                                    <td class="separator"></td>
+                                    <td>
+                                        <a href="javascript:void(0)" data-action="decrementMinute">
+                                            <i class="glyphicon glyphicon-chevron-down"></i>
+                                        </a>
+                                    </td>
+                                    <td class="separator">&nbsp;</td>
+                                    <td>
+                                        <a href="javascript:void(0)" data-action="toggleMeridian">
+                                            <i class="glyphicon glyphicon-chevron-down"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-clock-o"></i>
+                        </div>
+                        <input id="time" type="text" class="form-control timepicker">
+                    </div>
+            </div>
+            <div class="form-group col-md-3 col-sm-6">
+                <label>@Resources.Content_Floor</label>
+                <select id="floor" class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    @foreach (var floor in GetSelectList.GetFloorSelectList())
+                    {
+                        <option value="@floor.Value">@floor.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-3 col-sm-6">
+                <label>@Resources.Content_Type</label>
+                <select id="type" class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    @foreach (var type in GetSelectList.GetTableTypeSelectList())
+                    {
+                        <option value="@type.Value">@type.Text</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+        <input id="selectedTableString" type="hidden" />
+        <div id="tableTables" class="box-body form-group" style="margin-top: 20px">
+            <!--table-->
+        </div>
+    </div>
+
+    <div class="box-footer">
+        <button type="button" class="btn btn-default btn-flat pull-left btnViewOrders">@Resources.Content_ViewOrders</button>
+        <button type="button" class="btn btn-default btn-flat pull-right btnOrderFood">@Resources.Content_OrderFood</button>
+
+    </div>
+</div>
+<!-- Bootstrap 3.3.6 -->
+<script src="~/scripts/select2.full.min.js"></script>
+<script src="~/scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js"></script>
+<script src="~/Scripts/bootstrap-timepicker.min.js"></script>
+<script src="~/Scripts/icheck.min.js"></script>
+<script>
+    $(document)
+        .ready(function() {
+            GetTables();
+        });
+
+    $(".select2").select2();
+
+    $('#date')
+        .datepicker({
+            format: 'mm/dd/yyyy',
+            startDate: new Date(),
+            autoclose: true
+        });
+
+    $(".timepicker")
+        .timepicker({
+            showInputs: false
+        });
+
+    $("#floor")
+        .change(function() {
+            GetTables();
+        });
+    $("#type")
+       .change(function () {
+           GetTables();
+       });
+    $("#date")
+        .change(function() {
+            GetTables();
+        });
+
+    $("#time")
+        .change(function() {
+            GetTables();
+        });
+
+    $(".btnOrderFood")
+        .click(function () {
+            if ($("#selectedTableString").val().split(',').length > 1) {
+                $.ajax({
+                    url: '@Url.Action("OrderFood", "Orders")/?tableString=' +
+                        $("#selectedTableString").val() +
+                        '&&timeString=' +
+                        $("#date").val() +
+                        ' ' +
+                        $("#time").val(),
+                    type: 'GET',
+                    success: function(data) {
+                        ShowPopup(data);
+                    },
+                    error: function() {
+                        ConnectionError();
+                    }
+                });
+            }
+        });
+    $(".btnViewOrders")
+        .click(function () {
+            if ($("#selectedTableString").val().split(',').length === 2) {
+                $.ajax({
+                    url: '@Url.Action("ViewOrders", "Orders")/?tableId=' + $("#selectedTableString").val().replace(',', ''),
+                    type: "GET",
+                    success: function (data) {
+                        ShowPopup(data);
+                    },
+                    error: function () {
+                        ConnectionError();
+                    }
+                });
+            }
+        });
+
+    function initSelectedTable() {
+        var val = "";
+        $(".checkAvailableTable:checkbox:checked")
+            .each(function (i, selected) {
+                val += $(selected).attr("id") + ",";
+            });
+        $(".checkUnavailableTable:checkbox:checked")
+                .each(function (i, selected) {
+                    val += $(selected).attr("id") + ",";
+                });
+        $(".checkWarningTable:checkbox:checked")
+            .each(function (i, selected) {
+                val += $(selected).attr("id") + ",";
+            });
+        $("#selectedTableString").val(val);
+    }
+    function checkAvailableTable(table) {
+        var input = table.getElementsByTagName("input")[0];
+        var image = table.getElementsByTagName("img")[0];
+        if (input.checked) {
+            $(input).prop("checked", false);
+            $(image).removeClass("checkedAvailableTable");
+        } else {
+            $(input).prop("checked", true);
+            $(image).addClass("checkedAvailableTable");
+        }
+        $(".checkUnavailableTable:checkbox:checked")
+            .each(function (i, selected) {
+                var availableTable = $(selected).parents()[0];
+                $(selected).prop("checked", false);
+                $(availableTable.getElementsByTagName("img")[0]).removeClass("checkedUnavailableTable");
+            });
+        initSelectedTable();
+    }
+    function checkUnavailableTable(table) {
+        var input = table.getElementsByTagName("input")[0];
+        var image = table.getElementsByTagName("img")[0];
+        if (input.checked) {
+            $(input).prop("checked", false);
+            $(image).removeClass("checkedUnavailableTable");
+        } else {
+            $(input).prop("checked", true);
+            $(image).addClass("checkedUnavailableTable");
+        }
+        $(".checkAvailableTable:checkbox:checked")
+               .each(function (i, selected) {
+                   var unavailableTable = $(selected).parents()[0];
+                   $(selected).prop("checked", false);
+                   $(unavailableTable.getElementsByTagName("img")[0]).removeClass("checkedAvailableTable");
+               });
+        initSelectedTable();
+    }
+    function checkWarningTable(table) {
+        var input = table.getElementsByTagName("input")[0];
+        var image = table.getElementsByTagName("img")[0];
+        if (input.checked) {
+            $(input).prop("checked", false);
+            $(image).removeClass("checkedWarningTable");
+        } else {
+            $(input).prop("checked", true);
+            $(image).addClass("checkedWarningTable");
+        }
+        initSelectedTable();
+    }
+
+    function GetTables() {
+        $.get('@Url.Action("GetValidTables", "Table")/?timeString=' + $("#date").val() + ' ' + $("#time").val() + '&&floorId=' + $("#floor option:selected").val() + '&&typeId=' + $("#type option:selected").val(), {}, function (data) {
+            addDefaultOption($('#tableList'), "@Resources.Content_Tables");
+            renderTables($('#tableTables'), data);
+            $("#selectedTableString").val("");
+        });
+    }
+    function renderTables(table, results) {
+        table.html("");
+        if (results.length === 0) return;
+
+        $.each(results, function (i) {
+
+            if (results[i].Status === "Available") {
+                table.append('<div class="form-group col-md-2 col-sm-4 col-xs-6">' +
+                    '<a href="javascript:void(0)" onclick="checkAvailableTable(this)">' +
+                    '<input type="checkbox" id="' +
+                    results[i].Id +
+                    '"class="hidden checkAvailableTable" autocomplete="off">' +
+                    '<img src="@Support.GetPathPhotoFolder()/stage-blue.png" alt="..." class="img-responsive img-thumbnail" style="width: 100px; height: 100px">' +
+                    '</a>' +
+                    '<a class="users-list-name text-center" style="width: 100px;" href="javascript:void(0)">' +
+                    results[i].Name +
+                    '</a>' +
+                    '</div>');
+            } else if (results[i].Status === "Unavailable") {
+                table.append('<div class="form-group col-md-2 col-sm-4 col-xs-6">' +
+                    '<a href="javascript:void(0)" onclick="checkUnavailableTable(this)">' +
+                    '<input type="checkbox" id="' +
+                    results[i].Id +
+                    '" class="hidden checkUnavailableTable" autocomplete="off">' +
+                    '<img src="@Support.GetPathPhotoFolder()/stage-red.png" alt="..." class="img-responsive img-thumbnail" style="width: 100px; height: 100px">' +
+                    '</a>' +
+                    '<a class="users-list-name text-center"style="width: 100px;"  href="javascript:void(0)">' +
+                    results[i].Name +
+                    '</a>' +
+                    '</div>');
+            } else {
+                table.append('<div class="form-group col-md-2 col-sm-4 col-xs-6">' +
+                    '<a href="javascript:void(0)" onclick="checkWarningTable(this)">' +
+                    '<input type="checkbox" id="' +
+                    results[i].Id +
+                    '" class="hidden checkWarningTable" autocomplete="off">' +
+                    '<img src="@Support.GetPathPhotoFolder()/stage-warning.png" alt="..." class="img-responsive img-thumbnail" style="width: 100px; height: 100px">' +
+                    '</a>' +
+                    '<a class="users-list-name text-center" style="width: 100px;" href="javascript:void(0)">' +
+                    results[i].Name +
+                    '</a>' +
+                    '</div>');
+            }
+        });
+    }
+</script>

@@ -1,0 +1,177 @@
+﻿@using BookingTable.Entities.Enum
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Models.WebContentSettingModel
+@{
+    ViewBag.Title = Resources.Content_WebContent;
+    var tableInHome = Model.TablesString.Split(',');
+
+}
+<link rel="stylesheet" href="~/Content/css/select2.min.css" />
+<!-- Theme style -->
+<link rel="stylesheet" href="~/Content/css/AdminLTE.min.css">
+<!--Icheck-->
+<link rel="stylesheet" href="~/Content/css/all.css">
+<form id="formSetting">
+    <div class="box-body">
+        <div class="form-group col-md-6 col-sm-12 col-xs-12">
+            <div class="form-group">
+                <label for="WebLongName">@Resources.Content_WebLongName</label>
+                @Html.TextBoxFor(x => x.WebLongName, new { @class = "form-control", placeholder = Resources.Content_WebLongName })
+            </div>
+            <div class="form-group">
+                <label for="WebShortName">@Resources.Content_WebShortName</label>
+                @Html.TextBoxFor(x => x.WebShortName, new { @class = "form-control", placeholder = Resources.Content_WebShortName })
+            </div>
+            <div class="form-group">
+                <label for="Address">@Resources.Content_Address</label>
+                @Html.TextBoxFor(x => x.Address, new { @class = "form-control", placeholder = Resources.Content_Address })
+            </div>
+            <div class="form-group">
+                <label for="Phone">@Resources.Content_Phone</label>
+                @Html.TextBoxFor(x => x.Phone, new { @class = "form-control", placeholder = Resources.Content_Phone })
+            </div>
+            <div class="form-group">
+                <label for="Email">@Resources.Content_Email</label>
+                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = Resources.Content_Email })
+            </div>
+            <div class="form-group">
+                <label>@Resources.Content_Table @Resources.Content_MostSuitableSize</label>
+            </div>
+            <div class="form-group">
+                <img id="imageReview" src="~/Content/Uploads/Photos/table.png?dumb=@DateTime.Now.ToString("hhmmss")" class="img-responsive img-thumbnail" alt="Cinque Terre" style="width: 250px; height: auto;">
+            </div>
+            <div class="form-group">
+                <input type="file" name="fileImage" id="fileImage" accept="image/*" />
+            </div>
+            <div class="form-group">
+                <label>@Resources.Content_TableInHome</label>
+                <select id="selectTables" class="form-control select2 select2-hidden-accessible" multiple="" data-placeholder="@Resources.Content_Tables" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                    @if (tableInHome == null)
+                    {
+                        foreach (var item in GetSelectList.GetPermissionsSelectList())
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in GetSelectList.GetTableSelectList())
+                        {
+                            if (tableInHome.Any(x => x.Equals(item.Value)))
+                            {
+
+                                <option value="@item.Value" selected="selected">@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    }
+
+                </select>
+                <input type="hidden" name="TablesString" id="TablesString" value="@Model.TablesString" />
+            </div>
+            <div>
+                <button id="btnSave" type="button" class="btn btn-primary pull-left">@Resources.Content_Save</button>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Bootstrap 3.3.6 -->
+<script src="~/scripts/select2.full.min.js"></script>
+<script>
+    //Select 2
+    $(".select2").select2();
+
+    $('#selectTables').change(
+        function () {
+            var val = "";
+            $('#selectTables option:selected')
+                .each(function (i, selected) {
+                    val += $(selected).val() + ",";
+                });
+            $('#TablesString').val(val);
+        });
+    $(document).ready(function () {
+        $("#fileImage").change(function () {
+            readURL(this, $('#imageReview'));
+        });
+        jQuery.validator.addMethod("noSpaceOnly", function (value, element) {
+            return value.trim(' ') !== "";
+        }, '@Resources.Validate_Required');
+
+        $("#formSetting")
+            .validate({
+                rules: {
+                    WebLongName:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 64
+                    },
+                    WebShortName:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 64
+                    },
+                    Address:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 64
+                    },
+                    Phone:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 64
+                    },
+                    Email:
+                    {
+                        noSpaceOnly: true,
+                        maxlength: 64
+                    }
+                },
+                messages: {
+                    WebLongName:
+                    {
+                        maxlength: '@string.Format(Resources.Validate_Required,64)'
+                    },
+                    WebShortName:
+                    {
+                        maxlength: '@string.Format(Resources.Validate_Required,64)'
+                    },
+                    Address:
+                    {
+                        maxlength: '@string.Format(Resources.Validate_Required,64)'
+                    },
+                    Phone:
+                    {
+                        maxlength: '@string.Format(Resources.Validate_Required,64)'
+                    },
+                    Email:
+                    {
+                        maxlength: '@string.Format(Resources.Validate_Required,64)'
+                    }
+                }
+            });
+        $("#btnSave")
+            .click(function () {
+                if ($("#formSetting").valid()) {
+                    $.ajax({
+                        url: '@Url.Action("SaveWebContentSetting", "Setting")',
+                        type: 'POST',
+                        data: new FormData($("#formSetting")[0]),
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            ShowMessage(data);
+                        },
+                        error: function (data) {
+                            ShowMessage(data);
+                        }
+                    });
+                }
+            });
+    });
+
+</script>
