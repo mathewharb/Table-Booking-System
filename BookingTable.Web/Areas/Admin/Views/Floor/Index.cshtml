@@ -1,0 +1,140 @@
+﻿@using BookingTable.Web.Resources
+@model IEnumerable<BookingTable.Entities.Entities.Floor>
+@{
+    ViewBag.Title = Resources.Content_Floor;
+}
+<div class="box box-primary">
+    <div class="box-header">
+        <div class="form-group">
+            <button id="btnAddFloor" type="button" class="btn btn-default btn-flat pull-right">@Resources.Content_New</button>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+        <table id="tableFloor" class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width:100px">
+                        <a><i class="fa fa-cogs"></i></a>
+                    </th>
+                    <th>@Resources.Content_Name</th>
+                    <th>@Resources.Content_Tables</th>
+                    <th>@Resources.Content_Views</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var floor in Model)
+                {
+                    <tr id="@floor.Id">
+                        <td>
+                            <a href="javascript:void(0)" class="addTable"><i class="fa fa-plus"></i></a>
+                            <label style="width: 20px"></label>
+                            <a href="javascript:void(0)" class="editFloor"><i class="fa fa-edit"></i></a>
+                            <label style="width: 20px"></label>
+                            <a href="javascript:void(0)" class="deleteFloor"><i class="fa fa-remove"></i></a>
+                        </td>
+                        <td>@floor.Name</td>
+                        @if (floor.Tables != null)
+                        {
+                            <td>
+                                @floor.Tables.Count()
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                0
+                            </td>
+                        }
+                        <td>
+                            <a href="javascript:void(0)" class="viewTable">@Resources.Content_ViewTables</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document)
+        .ready(function () {
+            $('#tableFloor').DataTable();
+        });
+
+    $('#btnAddFloor')
+        .click(function () {
+            $.ajax({
+                url: '@Url.Action("Enter", "Floor")/?id=0',
+                type: 'GET',
+                success: function (data) {
+                    ShowPopup(data);
+                },
+                error: function () {
+                    ConnectionError();
+                }
+            });
+        });
+
+    $('.addTable')
+        .click(function () {
+            var id = $(this).parents().parents().attr('id');
+            $.ajax({
+                url: '@Url.Action("AddTable", "Floor")/?id=' + id,
+                type: 'GET',
+                success: function (data) {
+                    ShowPopup(data);
+                },
+                error: function () {
+                    ConnectionError();
+                }
+            });
+        });
+
+    $('.editFloor')
+        .click(function () {
+            var id = $(this).parents().parents().attr('id');
+
+            $.ajax({
+                url: '@Url.Action("Enter", "Floor")/?id=' + id,
+                type: 'GET',
+                success: function (data) {
+                    ShowPopup(data);
+                },
+                error: function () {
+                    ConnectionError();
+                }
+            });
+        });
+
+    $('.deleteFloor')
+        .click(function () {
+            var id = $(this).parents().parents().attr('id');
+
+            $.ajax({
+                url: '@Url.Action("Delete", "Floor")/?id=' + id,
+                type: 'GET',
+                success: function (data) {
+                    ShowPopup(data);
+                },
+                error: function () {
+                    ConnectionError();
+                }
+            });
+        });
+
+    $('.viewTable')
+        .click(function () {
+            var id = $(this).parents().parents().attr('id');
+
+            $.ajax({
+                url: '@Url.Action("ViewTables", "Floor")/?id=' + id,
+                type: 'GET',
+                success: function (data) {
+                    ShowPopup(data);
+                },
+                error: function () {
+                    ConnectionError();
+                }
+            });
+        });
+</script>

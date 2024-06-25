@@ -1,0 +1,41 @@
+﻿@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model IEnumerable<BookingTable.Entities.Entities.Table>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_ViewTables</h4>
+</div>
+
+
+<div class="modal-body">
+    <div id="tableTables" class="box-body form-group" style="margin-top: 20px">
+        @foreach (var table in Model)
+        {
+            if (table.Active != false)
+            {
+                <div class="form-group col-md-3 col-sm-4 col-xs-6">
+                    <a href="javascript:void(0)">
+                        <img src="@Support.GetPathPhotoFolder()/stage-blue.png" alt="..." class="img-responsive img-thumbnail" style="width: 100px; height: 100px">
+                    </a>
+                    <a class="users-list-name text-center" style="width: 100px;" href="javascript:void(0)">@table.Name (@table.TableType.Name)</a>
+                </div>
+            }
+            else
+            {
+                <div class="form-group col-md-3 col-sm-4 col-xs-6">
+                    <a href="javascript:void(0)">
+                        <img src="@Support.GetPathPhotoFolder()/stage-red.png" alt="..." class="img-responsive img-thumbnail" style="width: 100px; height: 100px">
+                    </a>
+                    <a class="users-list-name text-center" style="width: 100px;" href="javascript:void(0)">@table.Name (@table.TableType.Name)</a>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button type="button" class="btn btn-primary bg-blue" data-dismiss="modal">@Resources.Content_Back</button>
+</div>
