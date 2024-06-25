@@ -1,0 +1,10 @@
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\bin\Release\BookingTable.Entities.dll
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\bin\Release\BookingTable.Entities.pdb
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\bin\Release\EntityFramework.dll
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\bin\Release\EntityFramework.SqlServer.dll
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\bin\Release\EntityFramework.xml
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\bin\Release\EntityFramework.SqlServer.xml
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\obj\Release\BookingTable.Entities.csprojResolveAssemblyReference.cache
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\obj\Release\BookingTable.Entities.dll
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\obj\Release\BookingTable.Entities.pdb
+F:\Project\BookingTable\BookingTable\BookingTable.Entities\bin\Release\BookingTable.Entities.dll.config
