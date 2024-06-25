@@ -1,0 +1,86 @@
+﻿@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.TableType
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    @if (Model.Id > 0)
+    {
+        <h4 class="modal-title">@Resources.Content_Update</h4>
+    }
+    else
+    {
+        <h4 class="modal-title">@Resources.Content_New</h4>
+    }
+</div>
+<div class="modal-body">
+    <form id="formTableType">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="form-group">
+            <label for="Name">@Resources.Content_Name</label>
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = Resources.Content_Name })
+        </div>
+        <div class="form-group">
+            <label for="DepositPrice">@Resources.Content_Deposit</label>
+            @Html.TextBoxFor(x => x.DepositPrice, new { @class = "form-control", placeholder = Resources.Content_Deposit, value = Model.DepositPrice})
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button id="btnSave" type="button" class="btn btn-primary bg-blue">@Resources.Content_Save</button>
+</div>
+<script>
+    $(document)
+        .ready(function () {
+            jQuery.validator.addMethod("noSpaceOnly", function (value, element) {
+                return value.trim(' ') !== "";
+            }, '@Resources.Validate_Required');
+            $('#formTableType')
+                .validate({
+                    rules: {
+                        Name: {
+                            maxlength: 32,
+                            noSpaceOnly: true
+                        },
+                        DepositPrice: {
+                            required: true,
+                            maxlength: 10,
+                            number: true,
+                            min: 0
+                        }
+                    },
+                    messages: {
+                        Name: {
+                            maxlength: '@String.Format(Resources.Validate_LenghtMax,32)'
+                        },
+                        DepositPrice: {
+                            required: '@Resources.Validate_Required',
+                            maxlength: '@String.Format(Resources.Validate_LenghtMax,10)',
+                            number: '@Resources.Validate_Number',
+                            min: '@String.Format(Resources.Validate_Min,0)'
+                        }
+                    }
+
+                });
+            $('#btnSave')
+                .click(function () {
+                    if ($('#formTableType').valid()) {
+                            $.ajax({
+                                url: '@Url.Action("Enter", "TableType")',
+                                type: 'POST',
+                                data: $('#formTableType').serialize(),
+                                success: function (data) {
+                                    ShowMessage(data);
+                                },
+                                error: function () {
+                                    ConnectionError();
+                                }
+                            });
+                        }
+                });
+        });
+
+</script>
+

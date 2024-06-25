@@ -1,0 +1,39 @@
+﻿@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.TableType
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_Delete</h4>
+</div>
+<div class="modal-body">
+    <form id="formTableType">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div>
+            <a href="javascript:void(0)">@Resources.Content_Name <span class="pull-right">@Model.Name</span></a>
+            <p class="text-red">@Resources.Message__Warning_DeleteTableType</p>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button id="btnDelete" type="button" class="btn btn-primary bg-blue">@Resources.Content_Delete</button>
+</div>
+<script>
+    $('#btnDelete')
+        .click(function () {
+                if (window.FormData !== undefined) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "TableType")',
+                        type: 'POST',
+                        data: $('#formTableType').serialize(),
+                        success: function (data) {
+                            ShowMessage(data);
+                        },
+                        error: function () {
+                            ConnectionError();
+                        }
+                    });
+                }
+        });
+</script>
