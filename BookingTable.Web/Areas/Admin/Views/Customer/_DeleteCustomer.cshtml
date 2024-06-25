@@ -1,0 +1,41 @@
+﻿@using System.Globalization
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Customer
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_Delete</h4>
+</div>
+<div class="modal-body">
+    <form id="formCustomer">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <ul class="list-group">
+            <li class="list-group-item"><a href="javascript:void(0)">@Resources.Content_Fullname<span class="pull-right">@Model.FullName</span></a></li>
+            <li class="list-group-item"><a href="javascript:void(0)">@Resources.Content_Username <span class="pull-right ">@Model.Username</span></a></li>
+            <li class="list-group-item"><a href="javascript:void(0)">@Resources.Content_Birthday<span class="pull-right">@Model.DateOfBirth.ToString("yyyy MMMM dd")</span></a></li>
+        </ul>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button id="btnDelete" type="button" class="btn btn-primary bg-blue">@Resources.Content_Delete</button>
+</div>
+<script>
+    $('#btnDelete')
+                .click(function () {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Customer")',
+                        type: 'POST',
+                        data: $('#formCustomer').serialize(),
+                        success: function (data) {
+                            ShowMessage(data);
+                        },
+                        error: function () {
+                            ConnectionError();
+                        }
+                    });
+
+                });
+</script>
