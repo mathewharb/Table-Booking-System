@@ -28,14 +28,14 @@ To implement this application, please follow the deployment steps provided below
 6.	Paste the contents you have copied from the "SQL.sql" file, into the query window
 7.	Then Click the "Execute" button to create the database tables
 8.	Go to your project directory and open "Web.config" file located in the "BookingTable.Web" folder 
-9.	Locate the "<connectionStrings>" tag and find this line of code:
-          "<add name="BookingTableEntities" connectionString="data source=YOUR SERVER NAME;initial catalog=YOUR DATABASE NAME;persist security info=True;user id=YOUR USERNAME;password=YOUR PASSWORD;MultipleActiveResultSets=True;App=EntityFramework" providerName="System.Data.SqlClient"/>"
+9.	Locate the (<connectionStrings>) tag and find this line of code:
+                                                                      (<add name="BookingTableEntities" connectionString="data source=YOUR SERVER NAME;initial catalog=YOUR DATABASE NAME;persist security info=True;user id=YOUR USERNAME;password=YOUR PASSWORD;MultipleActiveResultSets=True;App=EntityFramework" providerName="System.Data.SqlClient"/>)
            
 10.    Replace the following placeholders with your credentials:
-                     "YOUR SERVER NAME"     (Replace this with your server name);
-                     "YOUR DATABASE NAME"   (Replace this with your database name);
-                     "YOUR USERNAME"        (Replace this with your databse Username);
-                     "YOUR PASSWORD"        (Replace this with your databse password);           
+                                                                "YOUR SERVER NAME"     (Replace this with your server name);
+                                                                "YOUR DATABASE NAME"   (Replace this with your database name);
+                                                                "YOUR USERNAME"        (Replace this with your databse Username);
+                                                                "YOUR PASSWORD"        (Replace this with your databse password);           
 
 
 11.	Finally, open your web browser and navigate to your site for example: 
