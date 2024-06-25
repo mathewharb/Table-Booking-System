@@ -1,0 +1,16 @@
+﻿label.error {
+    color: #a31515;
+}
+.checkedAvailableTable {
+    border: 4px solid #3c8dbc;
+    border-radius: 4px;
+}
+.checkedUnavailableTable {
+    border: 4px solid #D80027;
+    border-radius: 4px;
+}
+.checkedWarningTable {
+    border: 4px solid #FFDA44;
+    border-radius: 4px;
+}
+
