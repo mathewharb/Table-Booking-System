@@ -1,0 +1,741 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Content_Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Content_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Content_AddOrUpdate" xml:space="preserve">
+    <value>Add New or Update</value>
+  </data>
+  <data name="Content_Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Content_Birthday" xml:space="preserve">
+    <value>Birthday</value>
+  </data>
+  <data name="Content_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Content_Customer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="Content_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Content_Deposit" xml:space="preserve">
+    <value>Deposit</value>
+  </data>
+  <data name="Content_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Content_Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Content_Disable" xml:space="preserve">
+    <value>Disable </value>
+  </data>
+  <data name="Content_Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Content_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Content_Enable" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="Content_Enter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="Content_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Content_Floor" xml:space="preserve">
+    <value>Floor</value>
+  </data>
+  <data name="Content_Food" xml:space="preserve">
+    <value>Food</value>
+  </data>
+  <data name="Content_Free" xml:space="preserve">
+    <value>Free</value>
+  </data>
+  <data name="Content_Fullname" xml:space="preserve">
+    <value>Full name</value>
+  </data>
+  <data name="Content_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Content_IdentityCard" xml:space="preserve">
+    <value>Identity Card</value>
+  </data>
+  <data name="Content_Locked" xml:space="preserve">
+    <value>Locked</value>
+  </data>
+  <data name="Content_Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="Content_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Content_New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="Content_Ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="Content_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Content_Ordered" xml:space="preserve">
+    <value>Ordered</value>
+  </data>
+  <data name="Content_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Content_PasswordConfirm" xml:space="preserve">
+    <value>Password Confirm </value>
+  </data>
+  <data name="Content_Paypal" xml:space="preserve">
+    <value>Paypal</value>
+  </data>
+  <data name="Content_Permission" xml:space="preserve">
+    <value>Permission</value>
+  </data>
+  <data name="Content_Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Content_Photo" xml:space="preserve">
+    <value>Photo</value>
+  </data>
+  <data name="Content_Price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="Content_Quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="Content_Role" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="Content_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Content_Seats" xml:space="preserve">
+    <value>Seats</value>
+  </data>
+  <data name="Content_Setting" xml:space="preserve">
+    <value>Setting</value>
+  </data>
+  <data name="Content_SignOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="Content_Staff" xml:space="preserve">
+    <value>Staff</value>
+  </data>
+  <data name="Content_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Content_Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Content_Table" xml:space="preserve">
+    <value>Table</value>
+  </data>
+  <data name="Content_Tables" xml:space="preserve">
+    <value>Tables</value>
+  </data>
+  <data name="Content_TableType" xml:space="preserve">
+    <value>Table Type</value>
+  </data>
+  <data name="Content_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Content_Unit" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="Content_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Content_Username" xml:space="preserve">
+    <value>User name</value>
+  </data>
+  <data name="Content_WebContent" xml:space="preserve">
+    <value>Web content</value>
+  </data>
+  <data name="Validate_LenghtMax" xml:space="preserve">
+    <value>Please enter no more than {0} characters.</value>
+  </data>
+  <data name="Validate_Min" xml:space="preserve">
+    <value>Please enter a value greater than or equal to {0}.</value>
+  </data>
+  <data name="Validate_Number" xml:space="preserve">
+    <value>Please enter number only.</value>
+  </data>
+  <data name="Validate_Required" xml:space="preserve">
+    <value>This field is required.</value>
+  </data>
+  <data name="Content_Inactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="Content_Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Validate_Email" xml:space="preserve">
+    <value>Please enter email exactly.</value>
+  </data>
+  <data name="Validate_PasswordConfirm" xml:space="preserve">
+    <value>Password is not match.</value>
+  </data>
+  <data name="Validate_MaxDate" xml:space="preserve">
+    <value>Invalid Date.</value>
+  </data>
+  <data name="Content_RememberMe" xml:space="preserve">
+    <value>Remember me</value>
+  </data>
+  <data name="Content_SignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="Content_StartSession" xml:space="preserve">
+    <value>Sign in to start your session</value>
+  </data>
+  <data name="Content_AccountNumber" xml:space="preserve">
+    <value>Account number</value>
+  </data>
+  <data name="Content_WebLongName" xml:space="preserve">
+    <value>Site long name</value>
+  </data>
+  <data name="Content_NewPassword" xml:space="preserve">
+    <value>New Password</value>
+  </data>
+  <data name="Content_OldPassword" xml:space="preserve">
+    <value>Old password</value>
+  </data>
+  <data name="Content_WebShortName" xml:space="preserve">
+    <value>Site short name</value>
+  </data>
+  <data name="Content_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Content_Available" xml:space="preserve">
+    <value>Available</value>
+  </data>
+  <data name="Content_Unavailable" xml:space="preserve">
+    <value>Unavailable</value>
+  </data>
+  <data name="Content_Action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="Content_Pay" xml:space="preserve">
+    <value>Pay</value>
+  </data>
+  <data name="Content_Orders" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="Content_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Content_PendingOrders" xml:space="preserve">
+    <value>Pending orders</value>
+  </data>
+  <data name="Content_TableList" xml:space="preserve">
+    <value>Table list</value>
+  </data>
+  <data name="Content_Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="Content_Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Content_HaveNoValidTable" xml:space="preserve">
+    <value>Have no valid table</value>
+  </data>
+  <data name="Content_OrderFood" xml:space="preserve">
+    <value>Order Food</value>
+  </data>
+  <data name="Content_Booking" xml:space="preserve">
+    <value>Booking</value>
+  </data>
+  <data name="Content_Number" xml:space="preserve">
+    <value>Number</value>
+  </data>
+  <data name="Content_Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Content_Now" xml:space="preserve">
+    <value>Now</value>
+  </data>
+  <data name="Content_ViewOrders" xml:space="preserve">
+    <value>View Orders </value>
+  </data>
+  <data name="Content_Views" xml:space="preserve">
+    <value>Views</value>
+  </data>
+  <data name="Content_ViewTables" xml:space="preserve">
+    <value>View Tables</value>
+  </data>
+  <data name="Content_Staffs" xml:space="preserve">
+    <value>Staffs</value>
+  </data>
+  <data name="Content_Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Content_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Content_Uncompleted" xml:space="preserve">
+    <value>Uncompleted</value>
+  </data>
+  <data name="Content_ViewAll" xml:space="preserve">
+    <value>View All</value>
+  </data>
+  <data name="Content_AmountDue" xml:space="preserve">
+    <value>Amount Due</value>
+  </data>
+  <data name="Content_CompanyInfo" xml:space="preserve">
+    <value>Company info</value>
+  </data>
+  <data name="Content_CompanyName" xml:space="preserve">
+    <value>Company name</value>
+  </data>
+  <data name="Content_CustomerInfo" xml:space="preserve">
+    <value>Customer info</value>
+  </data>
+  <data name="Content_InvoiceInfo" xml:space="preserve">
+    <value>Invoice Info</value>
+  </data>
+  <data name="Content_OrderID" xml:space="preserve">
+    <value>Order ID</value>
+  </data>
+  <data name="Content_OrderInfo" xml:space="preserve">
+    <value>Order info</value>
+  </data>
+  <data name="Content_PaymentTime" xml:space="preserve">
+    <value>Payment Time</value>
+  </data>
+  <data name="Content_Qty" xml:space="preserve">
+    <value>Qty</value>
+  </data>
+  <data name="Content_RestaurantInfo" xml:space="preserve">
+    <value>Restaurant info</value>
+  </data>
+  <data name="Content_Sale" xml:space="preserve">
+    <value>Sale</value>
+  </data>
+  <data name="Content_SubTotal" xml:space="preserve">
+    <value>SubTotal</value>
+  </data>
+  <data name="Content_Tax" xml:space="preserve">
+    <value>Tax</value>
+  </data>
+  <data name="Content_TaxCode" xml:space="preserve">
+    <value>Tax code</value>
+  </data>
+  <data name="Content_CreationTime" xml:space="preserve">
+    <value>Creation time</value>
+  </data>
+  <data name="Content_Creator" xml:space="preserve">
+    <value>Creator</value>
+  </data>
+  <data name="Content_PayAndPrint" xml:space="preserve">
+    <value>Pay and Print</value>
+  </data>
+  <data name="Content_PayeeId" xml:space="preserve">
+    <value>Payee ID</value>
+  </data>
+  <data name="Content_Print" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="Content_SubminPayment" xml:space="preserve">
+    <value>Submit Payment</value>
+  </data>
+  <data name="Message_Error_Connection" xml:space="preserve">
+    <value>Could not connect to sever. Please check your internet!</value>
+  </data>
+  <data name="Message_Error_Delete" xml:space="preserve">
+    <value>Have no data to delete!</value>
+  </data>
+  <data name="Message_Error_Food_Foreign" xml:space="preserve">
+    <value>Could not delete. Have a least of an orders contains this food!</value>
+  </data>
+  <data name="Message_Error_Insert" xml:space="preserve">
+    <value>Could not insert data. Please check and try again!</value>
+  </data>
+  <data name="Message_Error_System" xml:space="preserve">
+    <value>Sorry! System error, Please try again!</value>
+  </data>
+  <data name="Message_Error_Validate" xml:space="preserve">
+    <value>Data is not valid. Please check and try again!</value>
+  </data>
+  <data name="Message_Success_Delete" xml:space="preserve">
+    <value>Delete data successful!</value>
+  </data>
+  <data name="Message_Success_Insert" xml:space="preserve">
+    <value>Insert data successful!</value>
+  </data>
+  <data name="Message_Error_Floor_Foreign" xml:space="preserve">
+    <value>Could not delete. Have a least of an orders in this floor!</value>
+  </data>
+  <data name="Message_Error_TableType_Foreign" xml:space="preserve">
+    <value>Could not delete. Have a least of orders table this table type!</value>
+  </data>
+  <data name="Message_Error_Table_Foreign" xml:space="preserve">
+    <value>Could not delete. Have a least of orders in this table!</value>
+  </data>
+  <data name="Content_AnyFloor" xml:space="preserve">
+    <value>Any floor</value>
+  </data>
+  <data name="Content_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Message_Error_Customer_Foreign" xml:space="preserve">
+    <value>The customer is ordering!</value>
+  </data>
+  <data name="Message_Error_PasswordConfirm" xml:space="preserve">
+    <value>Password do not match!</value>
+  </data>
+  <data name="Message_Error_UserExisted" xml:space="preserve">
+    <value>User name is existed!</value>
+  </data>
+  <data name="Message_Error_PermissionNoExist" xml:space="preserve">
+    <value>Permission is not existed!</value>
+  </data>
+  <data name="Message_Error_ChangeTable" xml:space="preserve">
+    <value>Could not change table, cause is new table is ordered!</value>
+  </data>
+  <data name="Message_Error_Food_Null" xml:space="preserve">
+    <value>This food is not existed!</value>
+  </data>
+  <data name="Message_Error_Food_Quantity" xml:space="preserve">
+    <value>Quantity is not enough!</value>
+  </data>
+  <data name="Message_Error_OrderFoodGet" xml:space="preserve">
+    <value>Could not order Food in this case!</value>
+  </data>
+  <data name="Message_Error_Order_Completed" xml:space="preserve">
+    <value>Could not update completed orders!</value>
+  </data>
+  <data name="Message_Error_Order_Null" xml:space="preserve">
+    <value>This order is not existed</value>
+  </data>
+  <data name="Message_Error_UpdateOrder" xml:space="preserve">
+    <value>Could not order in this case!</value>
+  </data>
+  <data name="Content_Allday" xml:space="preserve">
+    <value>All day</value>
+  </data>
+  <data name="Content_Hour" xml:space="preserve">
+    <value>Hour</value>
+  </data>
+  <data name="Content_OrderTime" xml:space="preserve">
+    <value>Order time</value>
+  </data>
+  <data name="Content_System" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="Content_AlreadyMemeber" xml:space="preserve">
+    <value>I already have a membership</value>
+  </data>
+  <data name="Content_ForgotPassword" xml:space="preserve">
+    <value>I forgot my password</value>
+  </data>
+  <data name="Content_NewMembership" xml:space="preserve">
+    <value>Register a new customer</value>
+  </data>
+  <data name="Content_Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="Content_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Content_SigninUsing" xml:space="preserve">
+    <value>Sign in using</value>
+  </data>
+  <data name="Content_SignupUsing" xml:space="preserve">
+    <value>Sign up using</value>
+  </data>
+  <data name="Content_AgreeTerms" xml:space="preserve">
+    <value>I agree to the terms</value>
+  </data>
+  <data name="Content_LoginOrRegister" xml:space="preserve">
+    <value>Login or register</value>
+  </data>
+  <data name="Content_Login" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="Massage_Error_PasswordNotMatch" xml:space="preserve">
+    <value>Password does not match</value>
+  </data>
+  <data name="Message_Error_Login" xml:space="preserve">
+    <value>Log in is not successful</value>
+  </data>
+  <data name="Message_Error_Register" xml:space="preserve">
+    <value>Register is not successful</value>
+  </data>
+  <data name="Message_Error_UsernameNotExist" xml:space="preserve">
+    <value>Password or Username is not exist!</value>
+  </data>
+  <data name="Message_Success_Login" xml:space="preserve">
+    <value>Log in successful</value>
+  </data>
+  <data name="Message_Success_Register" xml:space="preserve">
+    <value>Register successful</value>
+  </data>
+  <data name="Content_BookingConfirm" xml:space="preserve">
+    <value>Booking confirm</value>
+  </data>
+  <data name="Content_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Content_Content" xml:space="preserve">
+    <value>Content</value>
+  </data>
+  <data name="Content_Discount" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="Content_GeneralInfomation" xml:space="preserve">
+    <value>General Infomation</value>
+  </data>
+  <data name="Content_Info" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Content_SubmitBooking" xml:space="preserve">
+    <value>Submit Booking</value>
+  </data>
+  <data name="Content_Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="Content_UnitContent" xml:space="preserve">
+    <value>USD</value>
+  </data>
+  <data name="Content_All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Content_BasicInfo" xml:space="preserve">
+    <value>Basic info</value>
+  </data>
+  <data name="Content_BookingTable" xml:space="preserve">
+    <value>Booking Table</value>
+  </data>
+  <data name="Content_NoDeposit" xml:space="preserve">
+    <value>No Deposit when you order food</value>
+  </data>
+  <data name="Content_NoRequired" xml:space="preserve">
+    <value>Not required</value>
+  </data>
+  <data name="Content_Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Content_OrderLater" xml:space="preserve">
+    <value>You can order when you come!</value>
+  </data>
+  <data name="Content_Review" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="Content_Step" xml:space="preserve">
+    <value>Step</value>
+  </data>
+  <data name="Content_SubmitOrder" xml:space="preserve">
+    <value>Submit Order</value>
+  </data>
+  <data name="Content_WaitingOnlyOne" xml:space="preserve">
+    <value>Please waiting only one!</value>
+  </data>
+  <data name="Message_Success_Update_Password" xml:space="preserve">
+    <value>Update Message success.</value>
+  </data>
+  <data name="Message_Success_Update_Profile" xml:space="preserve">
+    <value>Update profile success.</value>
+  </data>
+  <data name="Content_PaymentInfo" xml:space="preserve">
+    <value>Payment Info</value>
+  </data>
+  <data name="Content_PaymentSuccess" xml:space="preserve">
+    <value>Payment Success</value>
+  </data>
+  <data name="Content_PayedBy" xml:space="preserve">
+    <value>Payed by</value>
+  </data>
+  <data name="Content_From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="Content_HelloNewMember" xml:space="preserve">
+    <value>Hi {0}! Welcome to {1}.</value>
+  </data>
+  <data name="Content_HelloOldMember" xml:space="preserve">
+    <value>Hi {0}! Welcome back.</value>
+  </data>
+  <data name="Content_Hi" xml:space="preserve">
+    <value>Hi</value>
+  </data>
+  <data name="Content_Invoice" xml:space="preserve">
+    <value>Invoice</value>
+  </data>
+  <data name="Content_Thanks" xml:space="preserve">
+    <value>Thank for your booking, check booking by email in restaurant</value>
+  </data>
+  <data name="Content_To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="Content_DiscountAndTax" xml:space="preserve">
+    <value>Discount and Tax</value>
+  </data>
+  <data name="Content_PDTToken" xml:space="preserve">
+    <value>PDT Token</value>
+  </data>
+  <data name="Content_TimeDistance" xml:space="preserve">
+    <value>Time distance</value>
+  </data>
+  <data name="Content_Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="Content_Mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="Content_TableInHome" xml:space="preserve">
+    <value>Table in home page</value>
+  </data>
+  <data name="Content_BookingLimit" xml:space="preserve">
+    <value>Booking limit</value>
+  </data>
+  <data name="Content_Book" xml:space="preserve">
+    <value>Book</value>
+  </data>
+  <data name="Content_Booked" xml:space="preserve">
+    <value>Booked</value>
+  </data>
+  <data name="Content_ClearAndRebook" xml:space="preserve">
+    <value>Clear and Rebook</value>
+  </data>
+  <data name="Content_SessionTimeout" xml:space="preserve">
+    <value>We are sorry! Because your session is time out. Please start again.</value>
+  </data>
+  <data name="Message__Warning_DeleteTableType" xml:space="preserve">
+    <value>Warning: Delete table type also delete all tables of this type!</value>
+  </data>
+  <data name="Content_ClearBooking" xml:space="preserve">
+    <value>Are you sure to clear booking and rebook!</value>
+  </data>
+  <data name="Content_MostSuitableSize" xml:space="preserve">
+    <value>(Max size 1024x1024)</value>
+  </data>
+  <data name="Content_Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+</root>
