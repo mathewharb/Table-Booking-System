@@ -1,0 +1,41 @@
+﻿@using System.Globalization
+@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Food
+@{
+    var locale = new CultureInfo("en-US");
+}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_Details</h4>
+</div>
+<div class="modal-body">
+    <ul class="list-group">
+        <li class="list-group-item"><img src="@Support.GetPathPhotoFolder()/@Model.Image?dumb=@DateTime.Now.ToString("hhmmss")" class="img-responsive img-thumbnail" alt="Cinque Terre" style="width:250px;height:auto;"></li>
+        <li class="list-group-item"><a href="javascript:void(0)">@Resources.Content_Name <span class="pull-right">@Model.Name</span></a></li>
+        <li class="list-group-item"><a href="javascript:void(0)">@Resources.Content_Unit <span class="pull-right ">@Model.Unit</span></a></li>
+        <li class="list-group-item"><a href="javascript:void(0)">@Resources.Content_Price<span class="pull-right">@Model.Price.ToString("c", locale)</span></a></li>
+        <li class="list-group-item"><a href="javascript:void(0)">@Resources.Content_Quantity<span class="pull-right">@Model.Quantity</span></a></li>
+        <li class="list-group-item">
+            <a href="javascript:void(0)">
+                @Resources.Content_Status
+            <span class="pull-right">
+                @if (Model.Active != false)
+            {
+                <span class="badge bg-green">@Resources.Content_Active</span>
+            }
+            else
+            {
+                <span class="badge bg-red">@Resources.Content_Inactive</span>
+            }
+        </span>
+    </a>
+</li>
+</ul>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button type="button" class="btn btn-primary bg-blue" data-dismiss="modal">@Resources.Content_Back</button>
+</div>

@@ -1,0 +1,44 @@
+﻿@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Food
+@{
+    var imageLink = Support.GetPathPhotoFolder() + "/" + Model.Image;
+}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title">@Resources.Content_Delete</h4>
+</div>
+<div class="modal-body">
+    <form id="formFood">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <ul class="list-group">
+            <li class="list-group-item">
+                <img src="@imageLink" class="img-responsive img-thumbnail" alt="Cinque Terre" style="width: 204px; height: auto;">
+            </li>
+            <li class="list-group-item"><a href="javascript:void(0)">@Resources.Content_Name<span class="pull-right">@Model.Name</span></a></li>
+        </ul>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button id="btnDelete" type="button" class="btn btn-primary bg-blue">@Resources.Content_Delete</button>
+</div>
+<script>
+    $('#btnDelete')
+        .click(function () {
+            $.ajax({
+                url: '@Url.Action("Delete", "Food")',
+                type: 'POST',
+                data: $('#formFood').serialize(),
+                success: function (data) {
+                    ShowMessage(data);
+                },
+                error: function () {
+                    ConnectionError();
+                }
+            });
+
+        });
+</script>

@@ -1,0 +1,177 @@
+﻿@using BookingTable.Web.Helpers
+@using BookingTable.Web.Resources
+@model BookingTable.Entities.Entities.Food
+@if (Model.Id > 0)
+{
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">@Resources.Content_Update</h4>
+    </div>
+    <div class="modal-body">
+        <form id="formFood">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="form-group">
+                <img id="imageReview" src="@Support.GetPathPhotoFolder()/@Model.Image?dumb=@DateTime.Now.ToString("hhmmss")" class="img-responsive img-thumbnail" alt="Cinque Terre" style="width: 250px; height: auto;">
+            </div>
+            <div class="form-group">
+                <input type="file" name="fileImage" id="fileImage" accept="image/*" />
+            </div>
+            <div class="form-group">
+                <label for="Name">@Resources.Content_Name</label>
+                @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = Resources.Content_Name })
+            </div>
+            <div class="form-group">
+                <label for="Description">@Resources.Content_Description</label>
+                @Html.TextAreaFor(x => x.Description, new { @class = "form-control", placeholder = Resources.Content_Description })
+            </div>
+            <div class="form-group">
+                <label for="Unit">@Resources.Content_Unit</label>
+                @Html.TextBoxFor(x => x.Unit, new { @class = "form-control", placeholder = Resources.Content_Unit })
+            </div>
+            <div class="form-group">
+                <label for="Price">@Resources.Content_Price</label>
+                @Html.TextBoxFor(x => x.Price, new { @class = "form-control", placeholder = Resources.Content_Price })
+            </div>
+            <div class="form-group">
+                <label for="Quantity">@Resources.Content_Quantity</label>
+                @Html.TextBoxFor(x => x.Quantity, new { @class = "form-control", placeholder = Resources.Content_Quantity })
+            </div>
+            <div class="form-group">
+                <label for="Active">@Resources.Content_Status</label>
+                @Html.DropDownListFor(x => x.Active, new List<SelectListItem> { new SelectListItem() { Value = "true", Text = Resources.Content_Active }, new SelectListItem() { Value = "false", Text = Resources.Content_Inactive } }, new { @class = "form-control" })
+            </div>
+        </form>
+    </div>
+}
+else
+{
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">@Resources.Content_New</h4>
+    </div>
+    <div class="modal-body">
+        <form id="formFood">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="form-group">
+                <img id="imageReview" src="~/Content/images/noImage.png" class="img-responsive img-thumbnail" alt="Cinque Terre" style="width: 250px; height: auto;">
+            </div>
+            <div class="form-group">
+                <input type="file" name="fileImage" id="fileImage" accept="image/*"/>
+            </div>
+            <div class="form-group">
+                <label for="Name">@Resources.Content_Name</label>
+                @Html.TextBoxFor(x => x.Name, new {@class = "form-control", placeholder = Resources.Content_Name})
+            </div>
+            <div class="form-group">
+                <label for="Description">@Resources.Content_Description</label>
+                @Html.TextAreaFor(x => x.Description, new {@class = "form-control", placeholder = Resources.Content_Description})
+            </div>
+            <div class="form-group">
+                <label for="Unit">@Resources.Content_Unit</label>
+                @Html.TextBoxFor(x => x.Unit, new {@class = "form-control", placeholder = Resources.Content_Unit})
+            </div>
+            <div class="form-group">
+                <label for="Price">@Resources.Content_Price</label>
+                @Html.TextBoxFor(x => x.Price, new {@class = "form-control", placeholder = Resources.Content_Price})
+            </div>
+            <div class="form-group">
+                <label for="Quantity">@Resources.Content_Quantity</label>
+                @Html.TextBoxFor(x => x.Quantity, new {@class = "form-control", placeholder = Resources.Content_Quantity})
+            </div>
+            <div class="form-group">
+                <label for="Active">@Resources.Content_Status</label>
+                @Html.DropDownListFor(x => x.Active, new List<SelectListItem> {new SelectListItem() {Value = "true", Text = Resources.Content_Active}, new SelectListItem() {Value = "false", Text = Resources.Content_Inactive}}, new {@class = "form-control"})
+            </div>
+        </form>
+    </div>
+}
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Resources.Content_Close</button>
+    <button id="btnSave" type="button" class="btn btn-primary bg-blue">@Resources.Content_Save</button>
+</div>
+<script>
+    $(document)
+        .ready(function () {
+
+            $("#fileImage").change(function () {
+                readURL(this, $('#imageReview'));
+            });
+
+            jQuery.validator.addMethod("noSpaceOnly", function (value, element) {
+                return value.trim(' ') !== "";
+            }, '@Resources.Validate_Required');
+
+            $('#formFood')
+                .validate({
+                    rules: {
+                        Name: {
+                            maxlength: 64,
+                            noSpaceOnly: true
+                        },
+                        Unit: {
+                            maxlength: 16,
+                            noSpaceOnly: true
+                        },
+                        Price: {
+                            required: true,
+                            maxlength: 10,
+                            number: true,
+                            min: 0
+                        },
+                        Quantity: {
+                            required: true,
+                            maxlength: 10,
+                            number: true,
+                            min: 0
+                        }
+                    },
+                    messages: {
+                        Name: {
+                            maxlength: '@String.Format(Resources.Validate_LenghtMax,64)'
+                        },
+                        Unit: {
+                            maxlength: '@String.Format(Resources.Validate_LenghtMax,16)'
+                        },
+                        Price: {
+                            required: '@Resources.Validate_Required',
+                            maxlength: '@String.Format(Resources.Validate_LenghtMax,10)',
+                            number: '@Resources.Validate_Number',
+                            min: '@String.Format(Resources.Validate_Min,0)'
+                        },
+                        Quantity: {
+                            required: '@Resources.Validate_Required',
+                            maxlength: '@String.Format(Resources.Validate_LenghtMax,10)',
+                            number: '@Resources.Validate_Number',
+                            min: '@String.Format(Resources.Validate_Min,0)'
+                        }
+                    }
+
+                });
+            $('#btnSave')
+                .click(function () {
+                    if ($('#formFood').valid()) {
+                        $.ajax({
+                            url: '@Url.Action("Enter", "Food")',
+                            type: 'POST',
+                            data: new FormData($('#formFood')[0]),
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (data) {
+                                ShowMessage(data);
+                            },
+                            error: function () {
+                                ConnectionError();
+                            }
+                        });
+                    }
+                });
+        });
+
+</script>
+
