@@ -61,6 +61,7 @@ TO LOGIN AS SAMPLE CUSTOMER:
 
 
 TO LOGIN AS ADMIN:
+
      First navigate to your site and add "/admin/home" to your url, for example:  "http://localhost/admin/home"  or  "
 http://www.yoursite.com/admin/home
 
