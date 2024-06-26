@@ -46,9 +46,7 @@ To implement this application, please follow the deployment steps provided below
            
 
 
-11.	Finally, open your web browser and navigate to your site for example: 
-
-         "http://localhost/" or "
+11.	Finally, open your web browser and navigate to your site for example:    "http://localhost/" or "
 http://www.yoursite.com/
 
 "
