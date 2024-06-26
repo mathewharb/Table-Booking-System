@@ -36,18 +36,20 @@ To implement this application, please follow the deployment steps provided below
 
 10.    Replace the following placeholders with your credentials:
 
-                                                                "YOUR SERVER NAME"     (Replace this with your server name);
+                             "YOUR SERVER NAME"     (Replace this with your server name);
 
-                                                                "YOUR DATABASE NAME"   (Replace this with your database name);
+                             "YOUR DATABASE NAME"   (Replace this with your database name);
 
-                                                                "YOUR USERNAME"        (Replace this with your databse Username);
+                             "YOUR USERNAME"        (Replace this with your databse Username);
 
-                                                                "YOUR PASSWORD"        (Replace this with your databse password);
+                             "YOUR PASSWORD"        (Replace this with your databse password);
            
 
 
 11.	Finally, open your web browser and navigate to your site for example: 
-           "http://localhost/"   or  
+
+           "http://localhost/"     OR  
+
            "
 http://www.yoursite.com/
 
